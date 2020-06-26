@@ -24,4 +24,5 @@
     <string name="notes">Notes</string>
     <string name="courses">Courses</string>
     <string name="videos_icon">Videos Icon</string>
+    <string name="note_icon">Note icon</string>
 </resources>
