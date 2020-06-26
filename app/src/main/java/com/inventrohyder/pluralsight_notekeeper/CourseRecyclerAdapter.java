@@ -1,7 +1,6 @@
 package com.inventrohyder.pluralsight_notekeeper;
 
 import android.content.Context;
-import android.content.Intent;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.snackbar.Snackbar;
@@ -14,14 +13,12 @@ import java.util.List;
 
 public class CourseRecyclerAdapter extends RecyclerView.Adapter<CourseRecyclerAdapter.ViewHolder>{
 
-    private final Context mContext;
     private final List<CourseInfo> mCourses;
     private final LayoutInflater mLayoutInflater;
 
     public CourseRecyclerAdapter(Context context, List<CourseInfo> courses) {
-        mContext = context;
         mCourses = courses;
-        mLayoutInflater = LayoutInflater.from(mContext);
+        mLayoutInflater = LayoutInflater.from(context);
     }
 
     @NonNull
@@ -59,8 +56,7 @@ public class CourseRecyclerAdapter extends RecyclerView.Adapter<CourseRecyclerAd
                             v,
                             mCourses.get(mCurrentPosition). getTitle(),
                             Snackbar.LENGTH_LONG
-                    )
-                            .show();
+                    ).show();
                 }
             });
         }
