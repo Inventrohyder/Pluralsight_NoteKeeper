@@ -6,17 +6,17 @@
         android:id="@+id/action_cancel"
         android:icon="@android:drawable/ic_menu_revert"
         android:orderInCategory="100"
-        android:title="Cancel"
+        android:title="@string/cancel"
         app:showAsAction="ifRoom|withText" />
     <item
         android:id="@+id/action_next"
         android:icon="@android:drawable/ic_media_next"
         android:orderInCategory="101"
-        android:title="Next"
+        android:title="@string/next"
         app:showAsAction="ifRoom|withText" />
     <item
         android:id="@+id/action_send_mail"
         android:orderInCategory="102"
-        android:title="Send as email"
+        android:title="@string/send_as_email"
         app:showAsAction="never" />
 </menu>
