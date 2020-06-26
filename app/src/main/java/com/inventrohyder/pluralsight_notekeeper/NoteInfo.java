@@ -1,9 +1,5 @@
 package com.inventrohyder.pluralsight_notekeeper;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.provider.ContactsContract;
-
 /**
  * Created by Jim.
  */
