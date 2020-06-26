@@ -19,10 +19,12 @@
     <string name="next">Next</string>
     <string name="cancel">Cancel</string>
     <string name="communicate">Communicate</string>
-    <string name="note_title">Note Title</string>
-    <string name="note_text">Note Text</string>
+    <string name="note_title_hint">Note Title</string>
+    <string name="note_text_hint">Note Text</string>
     <string name="notes">Notes</string>
     <string name="courses">Courses</string>
     <string name="videos_icon">Videos Icon</string>
     <string name="note_icon">Note icon</string>
+    <string name="nav_share_message">Don\'t you think you\'ve shared enough</string>
+    <string name="nav_send_message">Send</string>
 </resources>
