@@ -21,4 +21,6 @@
     <string name="communicate">Communicate</string>
     <string name="note_title">Note Title</string>
     <string name="note_text">Note Text</string>
+    <string name="notes">Notes</string>
+    <string name="courses">Courses</string>
 </resources>
