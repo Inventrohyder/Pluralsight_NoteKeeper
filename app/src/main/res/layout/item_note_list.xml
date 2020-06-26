@@ -33,7 +33,7 @@
                 android:id="@+id/text_course"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:textAppearance="@android:style/TextAppearance.Material.Large"
+                android:textAppearance="@style/CourseTitle"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/imageView3"
                 app:layout_constraintTop_toTopOf="parent"
