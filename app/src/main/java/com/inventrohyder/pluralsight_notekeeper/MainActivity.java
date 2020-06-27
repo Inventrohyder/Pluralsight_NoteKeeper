@@ -104,9 +104,9 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_courses) {
             displayCourses();
         } else if (id == R.id.nav_share) {
-            handleSelection(R.string.nav_share_message);
+            handleShare();
         } else if (id == R.id.nav_send) {
-            handleSelection(R.string.nav_send_message);
+            handleSend();
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -114,9 +114,18 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    private void handleSelection(int message_id) {
+    private void handleShare() {
         View view = findViewById(R.id.list_items);
-        Snackbar.make(view, message_id, Snackbar.LENGTH_LONG).show();
+
+        Snackbar.make(view, "Share to - " +
+                        PreferenceManager.getDefaultSharedPreferences(this)
+                                .getString("user_favourite_social", ""),
+                Snackbar.LENGTH_LONG).show();
+    }
+
+    private void handleSend() {
+        View view = findViewById(R.id.list_items);
+        Snackbar.make(view, R.string.nav_send_message, Snackbar.LENGTH_LONG).show();
     }
 
     @Override
