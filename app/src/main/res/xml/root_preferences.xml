@@ -18,11 +18,11 @@
             app:useSimpleSummaryProvider="true" />
 
         <ListPreference
-            app:defaultValue="reply"
-            app:entries="@array/reply_entries"
-            app:entryValues="@array/reply_values"
-            app:key="reply"
-            app:title="@string/reply_title"
+            app:defaultValue="@string/pref_default_favourite_social"
+            app:entries="@array/pref_entries_favourite_social"
+            app:entryValues="@array/pref_values_favourite_social"
+            app:key="user_favourite_social"
+            app:title="@string/pref_title_favourite_social"
             app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>
