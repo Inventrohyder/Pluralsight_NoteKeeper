@@ -2,7 +2,6 @@ package com.inventrohyder.pluralsight_notekeeper;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -168,6 +167,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initializeDisplayContent() {
+        // Connect to the database and create it if it doesn't exist
+        DataManager.loadFromDatabase(mDbOpenHelper);
         mRecyclerItems = findViewById(R.id.list_items);
         mNotesLayoutManager = new LinearLayoutManager(this);
         mCourseLayoutManager = new GridLayoutManager(this,
@@ -192,11 +193,6 @@ public class MainActivity extends AppCompatActivity
     private void displayNotes() {
         mRecyclerItems.setLayoutManager(mNotesLayoutManager);
         mRecyclerItems.setAdapter(mNoteRecyclerAdapter);
-
-        // Connect to the database and create it if it doesn't exist
-        // It is expensive to connect to the database during activity flow
-        // This should be improved
-        SQLiteDatabase db = mDbOpenHelper.getReadableDatabase();
 
         selectNavigationMenu(R.id.nav_notes);
     }

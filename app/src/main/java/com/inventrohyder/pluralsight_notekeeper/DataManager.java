@@ -1,5 +1,6 @@
 package com.inventrohyder.pluralsight_notekeeper;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.inventrohyder.pluralsight_notekeeper.NoteKeeperDatabaseContract.CourseInfoEntry;
@@ -34,11 +35,11 @@ public class DataManager {
                 CourseInfoEntry.COLUMN_COURSE_ID,
                 CourseInfoEntry.COLUMN_COURSE_TITLE
         };
-        db.query(CourseInfoEntry.TABLE_NAME, courseColumns, null, null, null, null, null);
+        Cursor courserCursor = db.query(CourseInfoEntry.TABLE_NAME, courseColumns, null, null, null, null, null);
 
         // Query the notes
         String[] noteColumns = {NoteInfoEntry.COLUMN_NOTE_TITLE, NoteInfoEntry.COLUMN_NOTE_TEXT, NoteInfoEntry.COLUMN_COURSE_ID};
-        db.query(NoteInfoEntry.TABLE_NAME, noteColumns, null, null, null, null, null);
+        Cursor noteCursor = db.query(NoteInfoEntry.TABLE_NAME, noteColumns, null, null, null, null, null);
     }
 
     public String getCurrentUserName() {
