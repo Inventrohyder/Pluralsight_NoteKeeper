@@ -2,6 +2,7 @@ package com.inventrohyder.pluralsight_notekeeper;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity
     private LinearLayoutManager mNotesLayoutManager;
     private CourseRecyclerAdapter mCourseRecyclerAdapter;
     private GridLayoutManager mCourseLayoutManager;
+    private NoteKeeperOpenHelper mDbOpenHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +41,13 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // Create an instance of the Database open helper
+        // NOTE: It is cheap to have an instance of the open helper, however, connecting with the
+        // database is expensive. Therefore, it is not a good idea to connect to the database in the
+        // onCreate method.
+        mDbOpenHelper = new NoteKeeperOpenHelper(this);
+
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,6 +68,13 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         initializeDisplayContent();
+    }
+
+    @Override
+    protected void onDestroy() {
+        // Close the database when destroying the activity
+        mDbOpenHelper.close();
+        super.onDestroy();
     }
 
     @Override
@@ -176,6 +192,11 @@ public class MainActivity extends AppCompatActivity
     private void displayNotes() {
         mRecyclerItems.setLayoutManager(mNotesLayoutManager);
         mRecyclerItems.setAdapter(mNoteRecyclerAdapter);
+
+        // Connect to the database and create it if it doesn't exist
+        // It is expensive to connect to the database during activity flow
+        // This should be improved
+        SQLiteDatabase db = mDbOpenHelper.getReadableDatabase();
 
         selectNavigationMenu(R.id.nav_notes);
     }
