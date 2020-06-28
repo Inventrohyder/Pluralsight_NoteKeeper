@@ -20,6 +20,9 @@ public class DataManager {
     private final List<CourseInfo> mCourses = new ArrayList<>();
     private final List<NoteInfo> mNotes = new ArrayList<>();
 
+    private DataManager() {
+    }
+
     public static DataManager getInstance() {
         if (ourInstance == null) {
             ourInstance = new DataManager();
@@ -61,8 +64,8 @@ public class DataManager {
     }
 
     public int findNote(NoteInfo note) {
-        for(int index = 0; index < mNotes.size(); index++) {
-            if(note.equals(mNotes.get(index)))
+        for (int index = 0; index < mNotes.size(); index++) {
+            if (note.equals(mNotes.get(index)))
                 return index;
         }
 
@@ -87,8 +90,8 @@ public class DataManager {
 
     public List<NoteInfo> getNotes(CourseInfo course) {
         ArrayList<NoteInfo> notes = new ArrayList<>();
-        for(NoteInfo note:mNotes) {
-            if(course.equals(note.getCourse()))
+        for (NoteInfo note : mNotes) {
+            if (course.equals(note.getCourse()))
                 notes.add(note);
         }
         return notes;
@@ -96,14 +99,11 @@ public class DataManager {
 
     public int getNoteCount(CourseInfo course) {
         int count = 0;
-        for(NoteInfo note:mNotes) {
-            if(course.equals(note.getCourse()))
+        for (NoteInfo note : mNotes) {
+            if (course.equals(note.getCourse()))
                 count++;
         }
         return count;
-    }
-
-    private DataManager() {
     }
 
     //region Initialization code
