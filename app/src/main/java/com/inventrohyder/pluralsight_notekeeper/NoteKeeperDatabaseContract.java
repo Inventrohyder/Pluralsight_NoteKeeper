@@ -5,7 +5,7 @@ import android.provider.BaseColumns;
 public final class NoteKeeperDatabaseContract {
 
     // Constraints
-    static final String NOT_NULL = " NOT_NULL ";
+    static final String NOT_NULL = " NOT NULL ";
     static final String UNIQUE = " UNIQUE ";
     static final String PRIMARY_KEY = " PRIMARY KEY ";
 
