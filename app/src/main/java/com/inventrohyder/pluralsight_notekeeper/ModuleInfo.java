@@ -1,7 +1,6 @@
 package com.inventrohyder.pluralsight_notekeeper;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import androidx.annotation.NonNull;
 
 /**
  * Created by Jim.
@@ -10,7 +9,7 @@ import android.os.Parcelable;
 public final class ModuleInfo {
     private final String mModuleId;
     private final String mTitle;
-    private boolean mIsComplete = false;
+    private boolean mIsComplete;
 
     public ModuleInfo(String moduleId, String title) {
         this(moduleId, title, false);
@@ -38,6 +37,7 @@ public final class ModuleInfo {
         mIsComplete = complete;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return mTitle;

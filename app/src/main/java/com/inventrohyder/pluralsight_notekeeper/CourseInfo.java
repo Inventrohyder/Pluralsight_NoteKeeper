@@ -1,10 +1,7 @@
 package com.inventrohyder.pluralsight_notekeeper;
 
-import android.database.Cursor;
-import android.os.Parcel;
-import android.os.Parcelable;
+import androidx.annotation.NonNull;
 
-import java.util.ArrayList;
 import java.util.List;
 /**
  * Created by Jim.
@@ -55,6 +52,7 @@ public final class CourseInfo {
         return null;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return mTitle;
