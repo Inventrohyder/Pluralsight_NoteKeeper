@@ -8,7 +8,6 @@ import com.inventrohyder.pluralsight_notekeeper.NoteKeeperDatabaseContract.NoteI
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Created by Jim.
@@ -48,7 +47,8 @@ public class DataManager {
         String[] noteColumns = {
                 NoteInfoEntry.COLUMN_NOTE_TITLE,
                 NoteInfoEntry.COLUMN_NOTE_TEXT,
-                NoteInfoEntry.COLUMN_COURSE_ID
+                NoteInfoEntry.COLUMN_COURSE_ID,
+                NoteInfoEntry._ID
         };
 
         // Load the notes ordered by both the courseId and NoteTitle
@@ -63,6 +63,7 @@ public class DataManager {
         int noteTitlePos = cursor.getColumnIndex(NoteInfoEntry.COLUMN_NOTE_TITLE);
         int noteTextPos = cursor.getColumnIndex(NoteInfoEntry.COLUMN_NOTE_TEXT);
         int courseIdPos = cursor.getColumnIndex(NoteInfoEntry.COLUMN_COURSE_ID);
+        int idPos = cursor.getColumnIndex(NoteInfoEntry._ID);
 
         DataManager dm = getInstance();
         dm.mNotes.clear();
@@ -71,11 +72,12 @@ public class DataManager {
             String noteTitle = cursor.getString(noteTitlePos);
             String noteText = cursor.getString(noteTextPos);
             String courseId = cursor.getString(courseIdPos);
+            int id = cursor.getInt(idPos);
 
             // Access the appropriate course
             CourseInfo noteCourse = dm.getCourse(courseId);
 
-            NoteInfo note = new NoteInfo(noteCourse, noteTitle, noteText);
+            NoteInfo note = new NoteInfo(id, noteCourse, noteTitle, noteText);
             dm.mNotes.add(note);
         }
 
@@ -117,7 +119,7 @@ public class DataManager {
     }
 
     public int createNewNote() {
-        NoteInfo note = new NoteInfo(null, null, null);
+        NoteInfo note = new NoteInfo(-1, null, null, null);
         mNotes.add(note);
         return mNotes.size() - 1;
     }
@@ -174,48 +176,48 @@ public class DataManager {
         mCourses.add(initializeCourse4());
     }
 
-    public void initializeExampleNotes() {
-        final DataManager dm = getInstance();
-
-        CourseInfo course = dm.getCourse("android_intents");
-        Objects.requireNonNull(course.getModule("android_intents_m01")).setComplete(true);
-        Objects.requireNonNull(course.getModule("android_intents_m02")).setComplete(true);
-        Objects.requireNonNull(course.getModule("android_intents_m03")).setComplete(true);
-        mNotes.add(new NoteInfo(course, "Dynamic intent resolution",
-                "Wow, intents allow components to be resolved at runtime"));
-        mNotes.add(new NoteInfo(course, "Delegating intents",
-                "PendingIntents are powerful; they delegate much more than just a component invocation"));
-
-        course = dm.getCourse("android_async");
-        Objects.requireNonNull(course.getModule("android_async_m01")).setComplete(true);
-        Objects.requireNonNull(course.getModule("android_async_m02")).setComplete(true);
-        mNotes.add(new NoteInfo(course, "Service default threads",
-                "Did you know that by default an Android Service will tie up the UI thread?"));
-        mNotes.add(new NoteInfo(course, "Long running operations",
-                "Foreground Services can be tied to a notification icon"));
-
-        course = dm.getCourse("java_lang");
-        Objects.requireNonNull(course.getModule("java_lang_m01")).setComplete(true);
-        Objects.requireNonNull(course.getModule("java_lang_m02")).setComplete(true);
-        Objects.requireNonNull(course.getModule("java_lang_m03")).setComplete(true);
-        Objects.requireNonNull(course.getModule("java_lang_m04")).setComplete(true);
-        Objects.requireNonNull(course.getModule("java_lang_m05")).setComplete(true);
-        Objects.requireNonNull(course.getModule("java_lang_m06")).setComplete(true);
-        Objects.requireNonNull(course.getModule("java_lang_m07")).setComplete(true);
-        mNotes.add(new NoteInfo(course, "Parameters",
-                "Leverage variable-length parameter lists"));
-        mNotes.add(new NoteInfo(course, "Anonymous classes",
-                "Anonymous classes simplify implementing one-use types"));
-
-        course = dm.getCourse("java_core");
-        Objects.requireNonNull(course.getModule("java_core_m01")).setComplete(true);
-        Objects.requireNonNull(course.getModule("java_core_m02")).setComplete(true);
-        Objects.requireNonNull(course.getModule("java_core_m03")).setComplete(true);
-        mNotes.add(new NoteInfo(course, "Compiler options",
-                "The -jar option isn't compatible with with the -cp option"));
-        mNotes.add(new NoteInfo(course, "Serialization",
-                "Remember to include SerialVersionUID to assure version compatibility"));
-    }
+//    public void initializeExampleNotes() {
+//        final DataManager dm = getInstance();
+//
+//        CourseInfo course = dm.getCourse("android_intents");
+//        Objects.requireNonNull(course.getModule("android_intents_m01")).setComplete(true);
+//        Objects.requireNonNull(course.getModule("android_intents_m02")).setComplete(true);
+//        Objects.requireNonNull(course.getModule("android_intents_m03")).setComplete(true);
+//        mNotes.add(new NoteInfo(course, "Dynamic intent resolution",
+//                "Wow, intents allow components to be resolved at runtime"));
+//        mNotes.add(new NoteInfo(course, "Delegating intents",
+//                "PendingIntents are powerful; they delegate much more than just a component invocation"));
+//
+//        course = dm.getCourse("android_async");
+//        Objects.requireNonNull(course.getModule("android_async_m01")).setComplete(true);
+//        Objects.requireNonNull(course.getModule("android_async_m02")).setComplete(true);
+//        mNotes.add(new NoteInfo(course, "Service default threads",
+//                "Did you know that by default an Android Service will tie up the UI thread?"));
+//        mNotes.add(new NoteInfo(course, "Long running operations",
+//                "Foreground Services can be tied to a notification icon"));
+//
+//        course = dm.getCourse("java_lang");
+//        Objects.requireNonNull(course.getModule("java_lang_m01")).setComplete(true);
+//        Objects.requireNonNull(course.getModule("java_lang_m02")).setComplete(true);
+//        Objects.requireNonNull(course.getModule("java_lang_m03")).setComplete(true);
+//        Objects.requireNonNull(course.getModule("java_lang_m04")).setComplete(true);
+//        Objects.requireNonNull(course.getModule("java_lang_m05")).setComplete(true);
+//        Objects.requireNonNull(course.getModule("java_lang_m06")).setComplete(true);
+//        Objects.requireNonNull(course.getModule("java_lang_m07")).setComplete(true);
+//        mNotes.add(new NoteInfo(course, "Parameters",
+//                "Leverage variable-length parameter lists"));
+//        mNotes.add(new NoteInfo(course, "Anonymous classes",
+//                "Anonymous classes simplify implementing one-use types"));
+//
+//        course = dm.getCourse("java_core");
+//        Objects.requireNonNull(course.getModule("java_core_m01")).setComplete(true);
+//        Objects.requireNonNull(course.getModule("java_core_m02")).setComplete(true);
+//        Objects.requireNonNull(course.getModule("java_core_m03")).setComplete(true);
+//        mNotes.add(new NoteInfo(course, "Compiler options",
+//                "The -jar option isn't compatible with with the -cp option"));
+//        mNotes.add(new NoteInfo(course, "Serialization",
+//                "Remember to include SerialVersionUID to assure version compatibility"));
+//    }
 
     private CourseInfo initializeCourse1() {
         List<ModuleInfo> modules = new ArrayList<>();
