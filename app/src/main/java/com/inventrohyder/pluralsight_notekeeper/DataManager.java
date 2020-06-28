@@ -3,6 +3,7 @@ package com.inventrohyder.pluralsight_notekeeper;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.inventrohyder.pluralsight_notekeeper.NoteKeeperDatabaseContract.CourseInfoEntry;
+import com.inventrohyder.pluralsight_notekeeper.NoteKeeperDatabaseContract.NoteInfoEntry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,11 +28,17 @@ public class DataManager {
 
     public static void loadFromDatabase(NoteKeeperOpenHelper dbHelper) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        // Query the courses
         final String[] courseColumns = {
                 CourseInfoEntry.COLUMN_COURSE_ID,
                 CourseInfoEntry.COLUMN_COURSE_TITLE
         };
         db.query(CourseInfoEntry.TABLE_NAME, courseColumns, null, null, null, null, null);
+
+        // Query the notes
+        String[] noteColumns = {NoteInfoEntry.COLUMN_NOTE_TITLE, NoteInfoEntry.COLUMN_NOTE_TEXT, NoteInfoEntry.COLUMN_COURSE_ID};
+        db.query(NoteInfoEntry.TABLE_NAME, noteColumns, null, null, null, null, null);
     }
 
     public String getCurrentUserName() {
