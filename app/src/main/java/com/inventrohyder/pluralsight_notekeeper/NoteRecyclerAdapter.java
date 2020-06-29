@@ -2,6 +2,7 @@ package com.inventrohyder.pluralsight_notekeeper;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,18 +11,31 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.List;
-
-public class NoteRecyclerAdapter extends RecyclerView.Adapter<NoteRecyclerAdapter.ViewHolder>{
+public class NoteRecyclerAdapter extends RecyclerView.Adapter<NoteRecyclerAdapter.ViewHolder> {
 
     private final Context mContext;
-    private final List<NoteInfo> mNotes;
+    private Cursor mCursor;
     private final LayoutInflater mLayoutInflater;
 
-    public NoteRecyclerAdapter(Context context, List<NoteInfo> notes) {
+    public NoteRecyclerAdapter(Context context, Cursor cursor) {
         mContext = context;
-        mNotes = notes;
+        mCursor = cursor;
         mLayoutInflater = LayoutInflater.from(mContext);
+        populateColumnPositions();
+    }
+
+    private void populateColumnPositions() {
+        if (mCursor == null)
+            return;
+        // Get column indexes from mCursor
+    }
+
+    private void changeCursor(Cursor cursor) {
+        if (mCursor != null)
+            mCursor.close();
+        mCursor = cursor;
+        populateColumnPositions();
+        notifyDataSetChanged();
     }
 
     @NonNull
