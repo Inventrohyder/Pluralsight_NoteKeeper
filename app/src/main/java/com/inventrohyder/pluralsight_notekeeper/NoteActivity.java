@@ -30,6 +30,7 @@ public class NoteActivity extends AppCompatActivity
     public static final String ORIGINAL_NOTE_COURSE_TITLE = "com.inventrohyder.pluralsight_notekeeper.ORIGINAL_NOTE_COURSE_TITLE";
     public static final String ORIGINAL_NOTE_COURSE_TEXT = "com.inventrohyder.pluralsight_notekeeper.ORIGINAL_NOTE_COURSE_TEXT";
     public static final int LOADER_NOTES = 0;
+    public static final int LOADER_COURSES = 1;
     private final String tag = getClass().getSimpleName();
     private NoteKeeperOpenHelper mDbOpenHelper;
     private NoteInfo mNote;
@@ -75,7 +76,7 @@ public class NoteActivity extends AppCompatActivity
         mAdapterCourses.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpinnerCourses.setAdapter(mAdapterCourses);
 
-        loadCourseData();
+        LoaderManager.getInstance(this).initLoader(LOADER_COURSES, null, this);
 
         readDisplayStateValues();
         if (savedInstanceState == null) {
@@ -291,8 +292,28 @@ public class NoteActivity extends AppCompatActivity
         CursorLoader loader = null;
         if (id == LOADER_NOTES)
             loader = createLoaderNotes();
+        else if (id == LOADER_COURSES) {
+            loader = createLoaderCourses();
+        }
 
         return loader;
+    }
+
+    private CursorLoader createLoaderCourses() {
+        return new CursorLoader(this) {
+            @Override
+            public Cursor loadInBackground() {
+                SQLiteDatabase db = mDbOpenHelper.getReadableDatabase();
+                String[] courseColumns = {
+                        CourseInfoEntry.COLUMN_COURSE_TITLE,
+                        CourseInfoEntry.COLUMN_COURSE_ID,
+                        CourseInfoEntry._ID
+                };
+
+                return db.query(CourseInfoEntry.TABLE_NAME, courseColumns,
+                        null, null, null, null, CourseInfoEntry.COLUMN_COURSE_TITLE);
+            }
+        };
     }
 
     private CursorLoader createLoaderNotes() {
@@ -321,6 +342,9 @@ public class NoteActivity extends AppCompatActivity
     public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
         if (loader.getId() == LOADER_NOTES)
             loadFinishedNotes(data);
+        else if (loader.getId() == LOADER_COURSES) {
+            mAdapterCourses.changeCursor(data);
+        }
     }
 
     private void loadFinishedNotes(Cursor data) {
@@ -342,6 +366,8 @@ public class NoteActivity extends AppCompatActivity
             if (mNoteCursor != null) {
                 mNoteCursor.close();
             }
+        } else if (loader.getId() == LOADER_COURSES) {
+            mAdapterCourses.changeCursor(null);
         }
     }
 }
