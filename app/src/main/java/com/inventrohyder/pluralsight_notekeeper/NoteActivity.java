@@ -31,6 +31,7 @@ public class NoteActivity extends AppCompatActivity
     public static final String ORIGINAL_NOTE_COURSE_TEXT = "com.inventrohyder.pluralsight_notekeeper.ORIGINAL_NOTE_COURSE_TEXT";
     public static final int LOADER_NOTES = 0;
     public static final int LOADER_COURSES = 1;
+    public static final boolean COURSE_QUERY_FINISHED = false;
     private final String tag = getClass().getSimpleName();
     private NoteKeeperOpenHelper mDbOpenHelper;
     private NoteInfo mNote;
@@ -48,6 +49,8 @@ public class NoteActivity extends AppCompatActivity
     private int mNoteTitlePos;
     private int mNoteTextPos;
     private SimpleCursorAdapter mAdapterCourses;
+    private boolean mCourseQueryFinished;
+    private boolean mNotesQueryFinshed;
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
@@ -300,6 +303,7 @@ public class NoteActivity extends AppCompatActivity
     }
 
     private CursorLoader createLoaderCourses() {
+        mCourseQueryFinished = false;
         return new CursorLoader(this) {
             @Override
             public Cursor loadInBackground() {
@@ -317,6 +321,7 @@ public class NoteActivity extends AppCompatActivity
     }
 
     private CursorLoader createLoaderNotes() {
+        mNotesQueryFinshed = false;
         return new CursorLoader(this) {
             @Override
             public Cursor loadInBackground() {
@@ -344,6 +349,8 @@ public class NoteActivity extends AppCompatActivity
             loadFinishedNotes(data);
         else if (loader.getId() == LOADER_COURSES) {
             mAdapterCourses.changeCursor(data);
+            mCourseQueryFinished = true;
+            displayNoteWhenQueryFinished();
         }
     }
 
@@ -355,9 +362,17 @@ public class NoteActivity extends AppCompatActivity
         mNoteTitlePos = mNoteCursor.getColumnIndex(NoteInfoEntry.COLUMN_NOTE_TITLE);
         mNoteTextPos = mNoteCursor.getColumnIndex(NoteInfoEntry.COLUMN_NOTE_TEXT);
 
-        // Display the note
-        mNoteCursor.moveToNext();  // Remember the cursor at first points right before the first value
-        displayNote();
+        // Remember the cursor at first points right before the first value
+        mNoteCursor.moveToNext();
+
+        mNotesQueryFinshed = true;
+
+        displayNoteWhenQueryFinished();
+    }
+
+    private void displayNoteWhenQueryFinished() {
+        if (mCourseQueryFinished && mNotesQueryFinshed)
+            displayNote();
     }
 
     @Override
