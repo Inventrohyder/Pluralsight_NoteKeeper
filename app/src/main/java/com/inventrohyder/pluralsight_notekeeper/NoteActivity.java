@@ -85,7 +85,7 @@ public class NoteActivity extends AppCompatActivity
         }
 
         if (!mIsNewNote)
-            getLoaderManager().initLoader(LOADER_NOTES, null, this);
+            LoaderManager.getInstance(this).initLoader(LOADER_NOTES, null, this);
 
         Log.d(tag, "onCreate");
 
@@ -111,29 +111,29 @@ public class NoteActivity extends AppCompatActivity
         super.onDestroy();
     }
 
-    private void lodeNoteData() {
-        SQLiteDatabase db = mDbOpenHelper.getReadableDatabase();
-
-        String selection = NoteInfoEntry._ID + " = ?";
-        String[] selectionArgs = {Integer.toString(mNoteId)};
-
-        String[] noteColumns = {
-                NoteInfoEntry.COLUMN_COURSE_ID,
-                NoteInfoEntry.COLUMN_NOTE_TITLE,
-                NoteInfoEntry.COLUMN_NOTE_TEXT
-        };
-
-        mNoteCursor = db.query(NoteInfoEntry.TABLE_NAME, noteColumns, selection, selectionArgs, null, null, null);
-
-        mCourseIdPos = mNoteCursor.getColumnIndex(NoteInfoEntry.COLUMN_COURSE_ID);
-        mNoteTitlePos = mNoteCursor.getColumnIndex(NoteInfoEntry.COLUMN_NOTE_TITLE);
-        mNoteTextPos = mNoteCursor.getColumnIndex(NoteInfoEntry.COLUMN_NOTE_TEXT);
-
-        mNoteCursor.moveToNext();
-        displayNote();
-
-        mNoteCursor.close();
-    }
+//    private void lodeNoteData() {
+//        SQLiteDatabase db = mDbOpenHelper.getReadableDatabase();
+//
+//        String selection = NoteInfoEntry._ID + " = ?";
+//        String[] selectionArgs = {Integer.toString(mNoteId)};
+//
+//        String[] noteColumns = {
+//                NoteInfoEntry.COLUMN_COURSE_ID,
+//                NoteInfoEntry.COLUMN_NOTE_TITLE,
+//                NoteInfoEntry.COLUMN_NOTE_TEXT
+//        };
+//
+//        mNoteCursor = db.query(NoteInfoEntry.TABLE_NAME, noteColumns, selection, selectionArgs, null, null, null);
+//
+//        mCourseIdPos = mNoteCursor.getColumnIndex(NoteInfoEntry.COLUMN_COURSE_ID);
+//        mNoteTitlePos = mNoteCursor.getColumnIndex(NoteInfoEntry.COLUMN_NOTE_TITLE);
+//        mNoteTextPos = mNoteCursor.getColumnIndex(NoteInfoEntry.COLUMN_NOTE_TEXT);
+//
+//        mNoteCursor.moveToNext();
+//        displayNote();
+//
+//        mNoteCursor.close();
+//    }
 
     private void restoreOriginalNoteValues(Bundle savedInstanceState) {
         mOriginalNoteCourseId = savedInstanceState.getString(ORIGINAL_NOTE_COURSE_ID);
@@ -207,8 +207,8 @@ public class NoteActivity extends AppCompatActivity
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        MenuItem item = menu.findItem(R.id.action_next);
-        int lastNoteIndex = DataManager.getInstance().getNotes().size() - 1;
+//        MenuItem item = menu.findItem(R.id.action_next);
+//        int lastNoteIndex = DataManager.getInstance().getNotes().size() - 1;
 //        item.setVisible(mNoteId < lastNoteIndex);
         return super.onPrepareOptionsMenu(menu);
     }
@@ -286,7 +286,6 @@ public class NoteActivity extends AppCompatActivity
         startActivity(intent);
     }
 
-    @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
         CursorLoader loader = null;
@@ -320,11 +319,29 @@ public class NoteActivity extends AppCompatActivity
 
     @Override
     public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
+        if (loader.getId() == LOADER_NOTES)
+            loadFinishedNotes(data);
+    }
 
+    private void loadFinishedNotes(Cursor data) {
+        mNoteCursor = data;
+
+        // Get column positions
+        mCourseIdPos = mNoteCursor.getColumnIndex(NoteInfoEntry.COLUMN_COURSE_ID);
+        mNoteTitlePos = mNoteCursor.getColumnIndex(NoteInfoEntry.COLUMN_NOTE_TITLE);
+        mNoteTextPos = mNoteCursor.getColumnIndex(NoteInfoEntry.COLUMN_NOTE_TEXT);
+
+        // Display the note
+        mNoteCursor.moveToNext();  // Remember the cursor at first points right before the first value
+        displayNote();
     }
 
     @Override
     public void onLoaderReset(@NonNull Loader<Cursor> loader) {
-
+        if (loader.getId() == LOADER_NOTES) {
+            if (mNoteCursor != null) {
+                mNoteCursor.close();
+            }
+        }
     }
 }
