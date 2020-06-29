@@ -18,8 +18,6 @@ import androidx.appcompat.widget.Toolbar;
 import com.inventrohyder.pluralsight_notekeeper.NoteKeeperDatabaseContract.CourseInfoEntry;
 import com.inventrohyder.pluralsight_notekeeper.NoteKeeperDatabaseContract.NoteInfoEntry;
 
-import java.util.List;
-
 public class NoteActivity extends AppCompatActivity {
     public static final String NOTE_ID = "com.inventrohyder.pluralsight_notekeeper.NOTE_ID";
     public static final int ID_NOT_SET = -1;
@@ -74,13 +72,14 @@ public class NoteActivity extends AppCompatActivity {
         loadCourseData();
 
         readDisplayStateValues();
-        if (!mIsNewNote)
-            lodeNoteData();
         if (savedInstanceState == null) {
             saveOriginalNoteValues();
         } else {
             restoreOriginalNoteValues(savedInstanceState);
         }
+
+        if (!mIsNewNote)
+            lodeNoteData();
 
         Log.d(tag, "onCreate");
 
@@ -137,11 +136,11 @@ public class NoteActivity extends AppCompatActivity {
     }
 
     private void saveOriginalNoteValues() {
-        if (mIsNewNote)
-            return;
-        mOriginalNoteCourseId =
-                mOriginalNoteTitle = mNote.getTitle();
-        mOriginalNoteText = mNote.getText();
+//        if (mIsNewNote)
+//            return;
+//        mOriginalNoteCourseId =
+//                mOriginalNoteTitle = mNote.getTitle();
+//        mOriginalNoteText = mNote.getText();
     }
 
     private void displayNote() {
@@ -149,14 +148,31 @@ public class NoteActivity extends AppCompatActivity {
         String noteTitle = mNoteCursor.getString(mNoteTitlePos);
         String noteText = mNoteCursor.getString(mNoteTextPos);
 
-        List<CourseInfo> courses = DataManager.getInstance().getCourses();
-        CourseInfo course = DataManager.getInstance().getCourse(courseId);
-        mNote = new NoteInfo(course, noteTitle, noteText);
+//        mNote = new NoteInfo(course, noteTitle, noteText);
 
-        int courseIndex = courses.indexOf(course);
+        int courseIndex = getIndexOfCourseId(courseId);
         mSpinnerCourses.setSelection(courseIndex);
         mTextNoteTitle.setText(noteTitle);
         mTextNoteText.setText(noteText);
+    }
+
+    private int getIndexOfCourseId(String courseId) {
+        Cursor cursor = mAdapterCourses.getCursor();
+        int courseIdPos = cursor.getColumnIndex(CourseInfoEntry.COLUMN_COURSE_ID);
+        int courseRowIndex = 0;
+
+
+        boolean more = cursor.moveToFirst();
+
+        while (more) {
+            String cursorCourseId = cursor.getString(courseIdPos);
+            if (courseId.equals(cursorCourseId))
+                break;
+
+            courseRowIndex++;
+            more = cursor.moveToNext();
+        }
+        return courseRowIndex;
     }
 
     private void readDisplayStateValues() {
@@ -240,16 +256,16 @@ public class NoteActivity extends AppCompatActivity {
     }
 
     private void storePreviousNoteValues() {
-        CourseInfo course = DataManager.getInstance().getCourse(mOriginalNoteCourseId);
-        mNote.setCourse(course);
-        mNote.setTitle(mOriginalNoteTitle);
-        mNote.setText(mOriginalNoteText);
+//        CourseInfo course = DataManager.getInstance().getCourse(mOriginalNoteCourseId);
+//        mNote.setCourse(course);
+//        mNote.setTitle(mOriginalNoteTitle);
+//        mNote.setText(mOriginalNoteText);
     }
 
     private void saveNote() {
-        mNote.setCourse((CourseInfo) mSpinnerCourses.getSelectedItem());
-        mNote.setTitle(mTextNoteTitle.getText().toString());
-        mNote.setText(mTextNoteText.getText().toString());
+//        mNote.setCourse((CourseInfo) mSpinnerCourses.getSelectedItem());
+//        mNote.setTitle(mTextNoteTitle.getText().toString());
+//        mNote.setText(mTextNoteText.getText().toString());
     }
 
     private void sendEmail() {
