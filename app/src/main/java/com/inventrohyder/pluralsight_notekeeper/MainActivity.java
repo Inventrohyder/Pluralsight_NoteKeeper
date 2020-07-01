@@ -226,12 +226,11 @@ public class MainActivity extends AppCompatActivity
                     String[] noteColumns = {
                             NoteInfoEntry.getQName(NoteInfoEntry._ID),
                             NoteInfoEntry.COLUMN_NOTE_TITLE,
-                            NoteInfoEntry.getQName(NoteInfoEntry.COLUMN_COURSE_ID),
                             CourseInfoEntry.COLUMN_COURSE_TITLE
                     };
 
                     // Load the notes ordered by both the courseId and NoteTitle
-                    final String noteOrderBy = NoteInfoEntry.COLUMN_COURSE_ID + ", " + NoteInfoEntry.COLUMN_NOTE_TITLE;
+                    final String noteOrderBy = CourseInfoEntry.COLUMN_COURSE_TITLE + ", " + NoteInfoEntry.COLUMN_NOTE_TITLE;
 
                     // note_info JOIN course_info on note_info.course_id = course_info.course_id
                     String tablesWithJoin = NoteInfoEntry.TABLE_NAME + " JOIN " +
