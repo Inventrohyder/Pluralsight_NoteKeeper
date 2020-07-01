@@ -236,9 +236,18 @@ public class NoteActivity extends AppCompatActivity
     }
 
     private void saveNote() {
-//        mNote.setCourse((CourseInfo) mSpinnerCourses.getSelectedItem());
-//        mNote.setTitle(mTextNoteTitle.getText().toString());
-//        mNote.setText(mTextNoteText.getText().toString());
+        String course_id = selectedCourseId();
+        String noteTitle = mTextNoteTitle.getText().toString();
+        String noteText = mTextNoteText.getText().toString();
+        saveNoteToDatabase(course_id, noteTitle, noteText);
+    }
+
+    private String selectedCourseId() {
+        int selectedPosition = mSpinnerCourses.getSelectedItemPosition();
+        Cursor cursor = mAdapterCourses.getCursor();
+        cursor.moveToPosition(selectedPosition);
+        int courseIdPos = cursor.getColumnIndex(CourseInfoEntry.COLUMN_COURSE_ID);
+        return cursor.getString(courseIdPos);
     }
 
     private void saveNoteToDatabase(String courseId, String noteTitle, String noteText) {
