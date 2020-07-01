@@ -162,12 +162,21 @@ public class NoteActivity extends AppCompatActivity
     }
 
     private void createNewNote() {
-        ContentValues values = new ContentValues();
+        final ContentValues values = new ContentValues();
         values.put(NoteInfoEntry.COLUMN_COURSE_ID, "");
         values.put(NoteInfoEntry.COLUMN_NOTE_TITLE, "");
         values.put(NoteInfoEntry.COLUMN_NOTE_TEXT, "");
-        SQLiteDatabase db = mDbOpenHelper.getWritableDatabase();
-        mNoteId = (int) db.insert(NoteInfoEntry.TABLE_NAME, null, values);
+
+        AsyncTask task = new AsyncTask() {
+            @Override
+            protected Object doInBackground(Object[] objects) {
+                SQLiteDatabase db = mDbOpenHelper.getWritableDatabase();
+                mNoteId = (int) db.insert(NoteInfoEntry.TABLE_NAME, null, values);
+                return null;
+            }
+        };
+
+        task.execute();
     }
 
     @Override
@@ -220,11 +229,11 @@ public class NoteActivity extends AppCompatActivity
     protected void onPause() {
         super.onPause();
         if (mIsCancelling) {
-            Log.i(tag, "Cancelling note at position " + mNoteId);
+            Log.i(tag, "Cancelling note at id: " + mNoteId);
             if (mIsNewNote) {
                 deleteNoteFromDatabase();
             } else {
-                storePreviousNoteValues();
+                Log.i(tag, "No updates to note with id: " + mNoteId);
             }
         } else {
             saveNote();
@@ -249,13 +258,6 @@ public class NoteActivity extends AppCompatActivity
         task.execute();
     }
 
-    private void storePreviousNoteValues() {
-//        CourseInfo course = DataManager.getInstance().getCourse(mOriginalNoteCourseId);
-//        mNote.setCourse(course);
-//        mNote.setTitle(mOriginalNoteTitle);
-//        mNote.setText(mOriginalNoteText);
-    }
-
     private void saveNote() {
         String course_id = selectedCourseId();
         String noteTitle = mTextNoteTitle.getText().toString();
@@ -272,16 +274,24 @@ public class NoteActivity extends AppCompatActivity
     }
 
     private void saveNoteToDatabase(String courseId, String noteTitle, String noteText) {
-        String selection = NoteInfoEntry._ID + " = ?";
-        String[] selectionArgs = {Integer.toString(mNoteId)};
+        final String selection = NoteInfoEntry._ID + " = ?";
+        final String[] selectionArgs = {Integer.toString(mNoteId)};
 
-        ContentValues values = new ContentValues();
+        final ContentValues values = new ContentValues();
         values.put(NoteInfoEntry.COLUMN_COURSE_ID, courseId);
         values.put(NoteInfoEntry.COLUMN_NOTE_TITLE, noteTitle);
         values.put(NoteInfoEntry.COLUMN_NOTE_TEXT, noteText);
 
-        SQLiteDatabase db = mDbOpenHelper.getWritableDatabase();
-        db.update(NoteInfoEntry.TABLE_NAME, values, selection, selectionArgs);
+        AsyncTask task = new AsyncTask() {
+            @Override
+            protected Object doInBackground(Object[] objects) {
+                SQLiteDatabase db = mDbOpenHelper.getWritableDatabase();
+                db.update(NoteInfoEntry.TABLE_NAME, values, selection, selectionArgs);
+                return null;
+            }
+        };
+
+        task.execute();
     }
 
     private void sendEmail() {
