@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -158,16 +157,15 @@ public class NoteActivity extends AppCompatActivity
         values.put(NoteInfoEntry.COLUMN_NOTE_TITLE, "");
         values.put(NoteInfoEntry.COLUMN_NOTE_TEXT, "");
 
-        AsyncTask<?, ? extends Void, ?> task = new AsyncTask<Object, Void, Object>() {
+        // Create a new note in the background
+        Runnable runnable = new Runnable() {
             @Override
-            protected Object doInBackground(Object[] objects) {
+            public void run() {
                 SQLiteDatabase db = mDbOpenHelper.getWritableDatabase();
                 mNoteId = (int) db.insert(NoteInfoEntry.TABLE_NAME, null, values);
-                return null;
             }
         };
-
-        task.execute();
+        new Thread(runnable).start();
     }
 
     @Override
@@ -231,16 +229,15 @@ public class NoteActivity extends AppCompatActivity
         final String selection = NoteInfoEntry._ID + " = ?";
         final String[] selectionArgs = {Integer.toString(mNoteId)};
 
-        AsyncTask<?, ? extends Void, ?> task = new AsyncTask<Object, Void, Object>() {
+        // Delete a new note in the background
+        Runnable runnable = new Runnable() {
             @Override
-            protected Object doInBackground(Object[] objects) {
+            public void run() {
                 SQLiteDatabase db = mDbOpenHelper.getWritableDatabase();
                 db.delete(NoteInfoEntry.TABLE_NAME, selection, selectionArgs);
-                return null;
             }
         };
-
-        task.execute();
+        new Thread(runnable).start();
     }
 
     private void saveNote() {
@@ -267,16 +264,16 @@ public class NoteActivity extends AppCompatActivity
         values.put(NoteInfoEntry.COLUMN_NOTE_TITLE, noteTitle);
         values.put(NoteInfoEntry.COLUMN_NOTE_TEXT, noteText);
 
-        AsyncTask<?, ? extends Void, ?> task = new AsyncTask<Object, Void, Object>() {
+        // Update a note in the background
+        Runnable runnable = new Runnable() {
             @Override
-            protected Object doInBackground(Object[] objects) {
+            public void run() {
                 SQLiteDatabase db = mDbOpenHelper.getWritableDatabase();
                 db.update(NoteInfoEntry.TABLE_NAME, values, selection, selectionArgs);
-                return null;
             }
         };
 
-        task.execute();
+        new Thread(runnable).start();
     }
 
     private void sendEmail() {
