@@ -230,7 +230,8 @@ public class MainActivity extends AppCompatActivity
                     };
 
                     // Load the notes ordered by both the courseId and NoteTitle
-                    final String noteOrderBy = CourseInfoEntry.COLUMN_COURSE_TITLE + ", " + NoteInfoEntry.COLUMN_NOTE_TITLE;
+                    final String noteOrderBy = CourseInfoEntry.COLUMN_COURSE_TITLE + ", " +
+                            NoteInfoEntry.COLUMN_NOTE_TITLE;
 
                     // note_info JOIN course_info on note_info.course_id = course_info.course_id
                     String tablesWithJoin = NoteInfoEntry.TABLE_NAME + " JOIN " +
@@ -238,7 +239,8 @@ public class MainActivity extends AppCompatActivity
                             NoteInfoEntry.getQName(NoteInfoEntry.COLUMN_COURSE_ID) + " = " +
                             CourseInfoEntry.getQName(CourseInfoEntry.COLUMN_COURSE_ID);
                     return db.query(tablesWithJoin, noteColumns,
-                            null, null, null, null, noteOrderBy);
+                            null, null, null, null,
+                            noteOrderBy);
 
                 }
             };
