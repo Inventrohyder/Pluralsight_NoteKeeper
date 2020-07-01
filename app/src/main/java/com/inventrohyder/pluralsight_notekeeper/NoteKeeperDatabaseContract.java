@@ -31,7 +31,7 @@ public final class NoteKeeperDatabaseContract {
                 "CREATE INDEX " + INDEX1 + " ON " + TABLE_NAME +
                         "(" + COLUMN_COURSE_TITLE + ")";
 
-        public static final String getQName(String columnName) {
+        public static String getQName(String columnName) {
             return TABLE_NAME + "." + columnName;
         }
 
@@ -57,7 +57,7 @@ public final class NoteKeeperDatabaseContract {
                 "CREATE INDEX " + INDEX1 + " ON " + TABLE_NAME +
                         "(" + COLUMN_NOTE_TITLE + ")";
 
-        public static final String getQName(String columnName) {
+        public static String getQName(String columnName) {
             return TABLE_NAME + "." + columnName;
         }
 
