@@ -50,7 +50,7 @@ public class NoteActivity extends AppCompatActivity
     private int mNoteTextPos;
     private SimpleCursorAdapter mAdapterCourses;
     private boolean mCourseQueryFinished;
-    private boolean mNotesQueryFinshed;
+    private boolean mNotesQueryFinished;
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
@@ -95,49 +95,11 @@ public class NoteActivity extends AppCompatActivity
 
     }
 
-    private void loadCourseData() {
-        SQLiteDatabase db = mDbOpenHelper.getReadableDatabase();
-        String[] courseColumns = {
-                CourseInfoEntry.COLUMN_COURSE_TITLE,
-                CourseInfoEntry.COLUMN_COURSE_ID,
-                CourseInfoEntry._ID
-        };
-
-        Cursor cursor = db.query(CourseInfoEntry.TABLE_NAME, courseColumns,
-                null, null, null, null, CourseInfoEntry.COLUMN_COURSE_TITLE);
-
-        mAdapterCourses.changeCursor(cursor);
-    }
-
     @Override
     protected void onDestroy() {
         mDbOpenHelper.close();
         super.onDestroy();
     }
-
-//    private void lodeNoteData() {
-//        SQLiteDatabase db = mDbOpenHelper.getReadableDatabase();
-//
-//        String selection = NoteInfoEntry._ID + " = ?";
-//        String[] selectionArgs = {Integer.toString(mNoteId)};
-//
-//        String[] noteColumns = {
-//                NoteInfoEntry.COLUMN_COURSE_ID,
-//                NoteInfoEntry.COLUMN_NOTE_TITLE,
-//                NoteInfoEntry.COLUMN_NOTE_TEXT
-//        };
-//
-//        mNoteCursor = db.query(NoteInfoEntry.TABLE_NAME, noteColumns, selection, selectionArgs, null, null, null);
-//
-//        mCourseIdPos = mNoteCursor.getColumnIndex(NoteInfoEntry.COLUMN_COURSE_ID);
-//        mNoteTitlePos = mNoteCursor.getColumnIndex(NoteInfoEntry.COLUMN_NOTE_TITLE);
-//        mNoteTextPos = mNoteCursor.getColumnIndex(NoteInfoEntry.COLUMN_NOTE_TEXT);
-//
-//        mNoteCursor.moveToNext();
-//        displayNote();
-//
-//        mNoteCursor.close();
-//    }
 
     private void restoreOriginalNoteValues(Bundle savedInstanceState) {
         mOriginalNoteCourseId = savedInstanceState.getString(ORIGINAL_NOTE_COURSE_ID);
@@ -321,7 +283,7 @@ public class NoteActivity extends AppCompatActivity
     }
 
     private CursorLoader createLoaderNotes() {
-        mNotesQueryFinshed = false;
+        mNotesQueryFinished = false;
         return new CursorLoader(this) {
             @Override
             public Cursor loadInBackground() {
@@ -365,13 +327,13 @@ public class NoteActivity extends AppCompatActivity
         // Remember the cursor at first points right before the first value
         mNoteCursor.moveToNext();
 
-        mNotesQueryFinshed = true;
+        mNotesQueryFinished = true;
 
         displayNoteWhenQueryFinished();
     }
 
     private void displayNoteWhenQueryFinished() {
-        if (mCourseQueryFinished && mNotesQueryFinshed)
+        if (mCourseQueryFinished && mNotesQueryFinished)
             displayNote();
     }
 
