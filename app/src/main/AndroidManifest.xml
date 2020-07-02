@@ -14,6 +14,7 @@
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
             android:parentActivityName=".MainActivity" />
+
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
@@ -28,6 +29,12 @@
             android:name=".NoteActivity"
             android:label="@string/title_activity_note"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <provider
+            android:name=".NoteKeeperProvider"
+            android:authorities="com.inventrohyder.pluralsight_notekeeper.provider"
+            android:enabled="true"
+            android:exported="true"></provider>
     </application>
 
 </manifest>
