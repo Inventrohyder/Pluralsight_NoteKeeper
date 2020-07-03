@@ -23,7 +23,7 @@ public class NoteKeeperProvider extends ContentProvider {
 
     public static final int COURSES = 0;
     public static final int NOTES = 1;
-    private static UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+    private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
     public static final int NOTES_EXPANDED = 2;
 
@@ -72,7 +72,7 @@ public class NoteKeeperProvider extends ContentProvider {
     public Uri insert(@NonNull Uri uri, ContentValues values) {
         SQLiteDatabase db = mDbOpenHelper.getWritableDatabase();
 
-        long rowId = -1;
+        long rowId;
         Uri rowUri = null;
         int uriMatch = sUriMatcher.match(uri);
 

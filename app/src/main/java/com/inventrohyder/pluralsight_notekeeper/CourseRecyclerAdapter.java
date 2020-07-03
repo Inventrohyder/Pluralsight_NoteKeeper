@@ -53,7 +53,6 @@ public class CourseRecyclerAdapter extends RecyclerView.Adapter<CourseRecyclerAd
         mCursor.moveToPosition(i);
         String courseTitle = mCursor.getString(mCoursePos);
         viewHolder.mTextCourse.setText(courseTitle);
-        viewHolder.mCurrentPosition = i;
     }
 
     @Override
@@ -64,7 +63,6 @@ public class CourseRecyclerAdapter extends RecyclerView.Adapter<CourseRecyclerAd
     public class ViewHolder extends RecyclerView.ViewHolder{
 
         public final TextView mTextCourse;
-        public int mCurrentPosition;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

@@ -9,12 +9,6 @@ public final class NoteInfo {
     private String mTitle;
     private String mText;
 
-    public NoteInfo(CourseInfo course, String title, String text) {
-        mCourse = course;
-        mTitle = title;
-        mText = text;
-    }
-
     public CourseInfo getCourse() {
         return mCourse;
     }
