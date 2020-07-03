@@ -1,6 +1,7 @@
 package com.inventrohyder.pluralsight_notekeeper;
 
 import android.content.ContentProvider;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
@@ -19,6 +20,7 @@ import com.inventrohyder.pluralsight_notekeeper.NoteKeeperProviderContract.Notes
 
 public class NoteKeeperProvider extends ContentProvider {
 
+    public static final String MIME_VENDOR_TYPE = "vnd." + NoteKeeperProviderContract.AUTHORITY + ".";
     private NoteKeeperOpenHelper mDbOpenHelper;
 
     public static final int COURSES = 0;
@@ -63,9 +65,33 @@ public class NoteKeeperProvider extends ContentProvider {
 
     @Override
     public String getType(@NonNull Uri uri) {
-        // TODO: Implement this to handle requests for the MIME type of the data
-        // at the given URI.
-        throw new UnsupportedOperationException("Not yet implemented");
+        String mimeType = null;
+
+        int uriMatch = sUriMatcher.match(uri);
+        switch (uriMatch) {
+            case COURSES:
+                // vnd.android.cursor.dir/vnd.com.inventrohyder.pluralsight_notekeeper.courses
+                mimeType = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" +
+                        MIME_VENDOR_TYPE + Courses.PATH;
+                break;
+            case NOTES:
+                // vnd.android.cursor.dir/vnd.com.inventrohyder.pluralsight_notekeeper.notes
+                mimeType = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" +
+                        MIME_VENDOR_TYPE + Notes.PATH;
+                break;
+            case NOTES_EXPANDED:
+                // vnd.android.cursor.dir/vnd.com.inventrohyder.pluralsight_notekeeper.notes_expanded
+                mimeType = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" +
+                        MIME_VENDOR_TYPE + Notes.PATH_EXPANDED;
+                break;
+            case NOTES_ROW:
+                // vnd.android.cursor.dir/vnd.com.inventrohyder.pluralsight_notekeeper.notes
+                mimeType = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" +
+                        MIME_VENDOR_TYPE + Notes.PATH;
+                break;
+        }
+
+        return mimeType;
     }
 
     @Override
