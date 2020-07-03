@@ -24,6 +24,7 @@ import androidx.loader.content.Loader;
 import com.inventrohyder.pluralsight_notekeeper.NoteKeeperDatabaseContract.CourseInfoEntry;
 import com.inventrohyder.pluralsight_notekeeper.NoteKeeperDatabaseContract.NoteInfoEntry;
 import com.inventrohyder.pluralsight_notekeeper.NoteKeeperProviderContract.Courses;
+import com.inventrohyder.pluralsight_notekeeper.NoteKeeperProviderContract.Notes;
 
 public class NoteActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -155,16 +156,14 @@ public class NoteActivity extends AppCompatActivity
 
     private void createNewNote() {
         final ContentValues values = new ContentValues();
-        values.put(NoteInfoEntry.COLUMN_COURSE_ID, "");
-        values.put(NoteInfoEntry.COLUMN_NOTE_TITLE, "");
-        values.put(NoteInfoEntry.COLUMN_NOTE_TEXT, "");
+        values.put(Notes.COLUMN_COURSE_ID, "");
+        values.put(Notes.COLUMN_NOTE_TITLE, "");
+        values.put(Notes.COLUMN_NOTE_TEXT, "");
 
-        // Create a new note in the background
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                SQLiteDatabase db = mDbOpenHelper.getWritableDatabase();
-                mNoteId = (int) db.insert(NoteInfoEntry.TABLE_NAME, null, values);
+                Uri uri = getContentResolver().insert(Notes.CONTENT_URI, values);
             }
         };
         new Thread(runnable).start();
