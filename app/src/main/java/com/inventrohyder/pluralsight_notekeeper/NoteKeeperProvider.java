@@ -41,8 +41,24 @@ public class NoteKeeperProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
-        // Implement this to handle requests to delete one or more rows.
-        throw new UnsupportedOperationException("Not yet implemented");
+        SQLiteDatabase db = mDbOpenHelper.getWritableDatabase();
+
+        int uriMatch = sUriMatcher.match(uri);
+
+        int deletedRows = 0;
+
+        switch (uriMatch) {
+            case COURSES:
+                throw new UnsupportedOperationException("The courses table does not support deletion");
+            case NOTES_ROW:
+                long rowId = ContentUris.parseId(uri);
+                String rowSelection = NoteInfoEntry._ID + " = ?";
+                String[] rowSelectionArgs = {Long.toString(rowId)};
+                deletedRows = db.delete(NoteInfoEntry.TABLE_NAME, rowSelection, rowSelectionArgs);
+        }
+
+        return deletedRows;
+
     }
 
     @Override

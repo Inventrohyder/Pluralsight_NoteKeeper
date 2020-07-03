@@ -229,15 +229,11 @@ public class NoteActivity extends AppCompatActivity
     }
 
     private void deleteNoteFromDatabase() {
-        final String selection = NoteInfoEntry._ID + " = ?";
-        final String[] selectionArgs = {Integer.toString(mNoteId)};
-
         // Delete a new note in the background
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                SQLiteDatabase db = mDbOpenHelper.getWritableDatabase();
-                db.delete(NoteInfoEntry.TABLE_NAME, selection, selectionArgs);
+                getContentResolver().delete(mNoteUri, null, null);
             }
         };
         new Thread(runnable).start();
