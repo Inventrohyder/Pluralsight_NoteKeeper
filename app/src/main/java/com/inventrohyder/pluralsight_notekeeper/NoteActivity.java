@@ -36,7 +36,6 @@ public class NoteActivity extends AppCompatActivity
     public static final int LOADER_NOTES = 0;
     public static final int LOADER_COURSES = 1;
     private final String TAG = getClass().getSimpleName();
-    private NoteKeeperOpenHelper mDbOpenHelper;
     private boolean mIsNewNote;
     private Spinner mSpinnerCourses;
     private EditText mTextNoteTitle;
@@ -70,8 +69,6 @@ public class NoteActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mDbOpenHelper = new NoteKeeperOpenHelper(this);
-
         mSpinnerCourses = findViewById(R.id.spinner_courses);
         mTextNoteTitle = findViewById(R.id.text_note_title);
         mTextNoteText = findViewById(R.id.text_note_text);
@@ -101,7 +98,6 @@ public class NoteActivity extends AppCompatActivity
 
     @Override
     protected void onDestroy() {
-        mDbOpenHelper.close();
         super.onDestroy();
     }
 
@@ -115,8 +111,6 @@ public class NoteActivity extends AppCompatActivity
         String courseId = mNoteCursor.getString(mCourseIdPos);
         String noteTitle = mNoteCursor.getString(mNoteTitlePos);
         String noteText = mNoteCursor.getString(mNoteTextPos);
-
-//        mNote = new NoteInfo(course, noteTitle, noteText);
 
         int courseIndex = getIndexOfCourseId(courseId);
         mSpinnerCourses.setSelection(courseIndex);
@@ -285,12 +279,15 @@ public class NoteActivity extends AppCompatActivity
     @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
-        CursorLoader loader;
+        CursorLoader loader = new CursorLoader(this);
 
-        if (id == LOADER_COURSES) {
-            loader = createLoaderCourses();
-        } else {   // LOADER_NOTES
-            loader = createLoaderNotes();
+        switch (id) {
+            case LOADER_COURSES:
+                loader = createLoaderCourses();
+                break;
+            case LOADER_NOTES:
+                loader = createLoaderNotes();
+                break;
         }
 
         return loader;

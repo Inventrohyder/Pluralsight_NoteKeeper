@@ -27,20 +27,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.inventrohyder.pluralsight_notekeeper.NoteKeeperProviderContract.Courses;
 import com.inventrohyder.pluralsight_notekeeper.NoteKeeperProviderContract.Notes;
-
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final int LOADER_NOTES = 0;
+    public static final int LOADER_COURSES = 2;
     private NoteRecyclerAdapter mNoteRecyclerAdapter;
     private RecyclerView mRecyclerItems;
     private LinearLayoutManager mNotesLayoutManager;
     private CourseRecyclerAdapter mCourseRecyclerAdapter;
     private GridLayoutManager mCourseLayoutManager;
-    private NoteKeeperOpenHelper mDbOpenHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,12 +47,6 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        // Create an instance of the Database open helper
-        // NOTE: It is cheap to have an instance of the open helper, however, connecting with the
-        // database is expensive. Therefore, it is not a good idea to connect to the database in the
-        // onCreate method.
-        mDbOpenHelper = new NoteKeeperOpenHelper(this);
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -147,6 +140,7 @@ public class MainActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         LoaderManager.getInstance(this).restartLoader(LOADER_NOTES, null, this);
+        LoaderManager.getInstance(this).restartLoader(LOADER_COURSES, null, this);
         updateNavHeader();
     }
 
@@ -168,8 +162,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initializeDisplayContent() {
-        // Connect to the database and create it if it doesn't exist
-        DataManager.loadFromDatabase(mDbOpenHelper);
         mRecyclerItems = findViewById(R.id.list_items);
         mNotesLayoutManager = new LinearLayoutManager(this);
         mCourseLayoutManager = new GridLayoutManager(this,
@@ -177,8 +169,7 @@ public class MainActivity extends AppCompatActivity
 
         mNoteRecyclerAdapter = new NoteRecyclerAdapter(this, null);
 
-        List<CourseInfo> courses = DataManager.getInstance().getCourses();
-        mCourseRecyclerAdapter = new CourseRecyclerAdapter(this, courses);
+        mCourseRecyclerAdapter = new CourseRecyclerAdapter(this, null);
 
         displayNotes();
     }
@@ -206,23 +197,34 @@ public class MainActivity extends AppCompatActivity
     @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
-        CursorLoader loader = null;
-        // The loader id is LOADER_NOTES
-        if (id == LOADER_NOTES) {
-            // Query the notes
-            String[] noteColumns = {
-                    Notes._ID,
-                    Notes.COLUMN_NOTE_TITLE,
-                    Notes.COLUMN_COURSE_TITLE
-            };
+        CursorLoader loader = new CursorLoader(this);
+        switch (id) {
+            case LOADER_NOTES:
+                // Query the notes
+                String[] noteColumns = {
+                        Notes._ID,
+                        Notes.COLUMN_NOTE_TITLE,
+                        Notes.COLUMN_COURSE_TITLE
+                };
 
-            // Load the notes ordered by both the courseId and NoteTitle
-            final String noteOrderBy = Notes.COLUMN_COURSE_TITLE + ", " +
-                    Notes.COLUMN_NOTE_TITLE;
+                // Load the notes ordered by both the courseId and NoteTitle
+                final String noteOrderBy = Notes.COLUMN_COURSE_TITLE + ", " +
+                        Notes.COLUMN_NOTE_TITLE;
 
-            loader = new CursorLoader(this, Notes.CONTENT_EXPANDED_URI, noteColumns,
-                    null, null, noteOrderBy);
+                loader = new CursorLoader(this, Notes.CONTENT_EXPANDED_URI, noteColumns,
+                        null, null, noteOrderBy);
+                break;
+            case LOADER_COURSES:
+                // Query the courses
+                String[] courseColumns = {
+                        Courses.COLUMN_COURSE_TITLE
+                };
+
+                loader = new CursorLoader(this, Courses.CONTENT_URI, courseColumns,
+                        null, null, Courses.COLUMN_COURSE_TITLE);
+                break;
         }
+
         return loader;
     }
 
