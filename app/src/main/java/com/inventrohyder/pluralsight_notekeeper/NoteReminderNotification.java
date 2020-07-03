@@ -23,7 +23,7 @@ class NoteReminderNotification {
     private static final String NOTIFICATION_TAG = "NoteReminder";
 
     public static void notify(final Context context,
-                              final String noteText) {
+                              final String noteTitle, final String noteText) {
         createNotificationChannel(context);
 
         final Resources res = context.getResources();
@@ -37,6 +37,11 @@ class NoteReminderNotification {
                 .setContentText(noteText)
                 .setLargeIcon(picture)
                 .setTicker("Review note")
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText(noteText)
+                        .setBigContentTitle(noteTitle)
+                        .setSummaryText("Review note")
+                )
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setContentIntent(
                         PendingIntent.getActivity(
