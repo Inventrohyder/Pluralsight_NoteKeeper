@@ -11,8 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.inventrohyder.pluralsight_notekeeper.NoteKeeperDatabaseContract.CourseInfoEntry;
-import com.inventrohyder.pluralsight_notekeeper.NoteKeeperDatabaseContract.NoteInfoEntry;
+import com.inventrohyder.pluralsight_notekeeper.NoteKeeperProviderContract.Notes;
 
 public class NoteRecyclerAdapter extends RecyclerView.Adapter<NoteRecyclerAdapter.ViewHolder> {
 
@@ -34,9 +33,9 @@ public class NoteRecyclerAdapter extends RecyclerView.Adapter<NoteRecyclerAdapte
         if (mCursor == null)
             return;
         // Get column indexes from mCursor
-        mCoursePos = mCursor.getColumnIndex(CourseInfoEntry.COLUMN_COURSE_TITLE);
-        mNoteTitlePos = mCursor.getColumnIndex(NoteInfoEntry.COLUMN_NOTE_TITLE);
-        mIdPos = mCursor.getColumnIndex(NoteInfoEntry._ID);
+        mCoursePos = mCursor.getColumnIndex(Notes.COLUMN_COURSE_TITLE);
+        mNoteTitlePos = mCursor.getColumnIndex(Notes.COLUMN_NOTE_TITLE);
+        mIdPos = mCursor.getColumnIndex(Notes._ID);
     }
 
     public void changeCursor(Cursor cursor) {

@@ -67,6 +67,10 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
+        // Data in the courses table doesn't change therefore we don't need to restart the loader
+        // every time we resume
+        LoaderManager.getInstance(this).initLoader(LOADER_COURSES, null, this);
+
         initializeDisplayContent();
     }
 
@@ -140,7 +144,6 @@ public class MainActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         LoaderManager.getInstance(this).restartLoader(LOADER_NOTES, null, this);
-        LoaderManager.getInstance(this).restartLoader(LOADER_COURSES, null, this);
         updateNavHeader();
     }
 
@@ -230,15 +233,23 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
-        if (loader.getId() == LOADER_NOTES) {
-            mNoteRecyclerAdapter.changeCursor(data);
+        switch (loader.getId()) {
+            case LOADER_NOTES:
+                mNoteRecyclerAdapter.changeCursor(data);
+                break;
+            case LOADER_COURSES:
+                mCourseRecyclerAdapter.changeCursor(data);
         }
     }
 
     @Override
     public void onLoaderReset(@NonNull Loader loader) {
-        if (loader.getId() == LOADER_NOTES) {
-            mNoteRecyclerAdapter.changeCursor(null);
+        switch (loader.getId()) {
+            case LOADER_NOTES:
+                mNoteRecyclerAdapter.changeCursor(null);
+                break;
+            case LOADER_COURSES:
+                mCourseRecyclerAdapter.changeCursor(null);
         }
     }
 }

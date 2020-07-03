@@ -1,24 +1,44 @@
 package com.inventrohyder.pluralsight_notekeeper;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-import com.google.android.material.snackbar.Snackbar;
+import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.List;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
-public class CourseRecyclerAdapter extends RecyclerView.Adapter<CourseRecyclerAdapter.ViewHolder>{
+import com.google.android.material.snackbar.Snackbar;
+import com.inventrohyder.pluralsight_notekeeper.NoteKeeperProviderContract.Courses;
 
-    private final List<CourseInfo> mCourses;
+public class CourseRecyclerAdapter extends RecyclerView.Adapter<CourseRecyclerAdapter.ViewHolder> {
+
+    private Cursor mCursor;
     private final LayoutInflater mLayoutInflater;
+    private int mCoursePos;
 
-    public CourseRecyclerAdapter(Context context, List<CourseInfo> courses) {
-        mCourses = courses;
+    public CourseRecyclerAdapter(Context context, Cursor cursor) {
+        mCursor = cursor;
         mLayoutInflater = LayoutInflater.from(context);
+        populateColumnPositions();
+    }
+
+    private void populateColumnPositions() {
+        if (mCursor == null)
+            return;
+        // Get column indexes from mCursor
+        mCoursePos = mCursor.getColumnIndex(Courses.COLUMN_COURSE_TITLE);
+    }
+
+    public void changeCursor(Cursor cursor) {
+        if (mCursor != null && mCursor != cursor) {
+            mCursor.close();
+        }
+        mCursor = cursor;
+        populateColumnPositions();
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -30,14 +50,15 @@ public class CourseRecyclerAdapter extends RecyclerView.Adapter<CourseRecyclerAd
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-        CourseInfo course = mCourses.get(i);
-        viewHolder.mTextCourse.setText(course.getTitle());
+        mCursor.moveToPosition(i);
+        String courseTitle = mCursor.getString(mCoursePos);
+        viewHolder.mTextCourse.setText(courseTitle);
         viewHolder.mCurrentPosition = i;
     }
 
     @Override
     public int getItemCount() {
-        return mCourses.size();
+        return mCursor == null ? 0 : mCursor.getCount();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
@@ -54,7 +75,7 @@ public class CourseRecyclerAdapter extends RecyclerView.Adapter<CourseRecyclerAd
                 public void onClick(View v) {
                     Snackbar.make(
                             v,
-                            mCourses.get(mCurrentPosition). getTitle(),
+                            mCursor.getString(mCoursePos),
                             Snackbar.LENGTH_LONG
                     ).show();
                 }
