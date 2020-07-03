@@ -27,7 +27,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
-import com.inventrohyder.pluralsight_notekeeper.NoteKeeperDatabaseContract.NoteInfoEntry;
 import com.inventrohyder.pluralsight_notekeeper.NoteKeeperProviderContract.Notes;
 
 import java.util.List;
@@ -212,7 +211,7 @@ public class MainActivity extends AppCompatActivity
         if (id == LOADER_NOTES) {
             // Query the notes
             String[] noteColumns = {
-                    NoteInfoEntry.getQName(NoteInfoEntry._ID),
+                    Notes._ID,
                     Notes.COLUMN_NOTE_TITLE,
                     Notes.COLUMN_COURSE_TITLE
             };
