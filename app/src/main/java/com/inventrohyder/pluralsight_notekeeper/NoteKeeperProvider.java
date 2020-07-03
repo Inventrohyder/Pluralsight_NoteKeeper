@@ -156,7 +156,22 @@ public class NoteKeeperProvider extends ContentProvider {
     @Override
     public int update(@NonNull Uri uri, ContentValues values, String selection,
                       String[] selectionArgs) {
-        // TODO: Implement this to handle requests to update one or more rows.
-        throw new UnsupportedOperationException("Not yet implemented");
+        SQLiteDatabase db = mDbOpenHelper.getWritableDatabase();
+
+        int uriMatch = sUriMatcher.match(uri);
+
+        int updatedRows = 0;
+
+        switch (uriMatch) {
+            case COURSES:
+                throw new UnsupportedOperationException("The courses table does not support update");
+            case NOTES_ROW:
+                long rowId = ContentUris.parseId(uri);
+                String rowSelection = NoteInfoEntry._ID + " = ?";
+                String[] rowSelectionArgs = {Long.toString(rowId)};
+                updatedRows = db.update(NoteInfoEntry.TABLE_NAME, values, rowSelection, rowSelectionArgs);
+        }
+
+        return updatedRows;
     }
 }
