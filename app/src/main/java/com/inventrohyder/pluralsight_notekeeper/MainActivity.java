@@ -3,7 +3,6 @@ package com.inventrohyder.pluralsight_notekeeper;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,8 +27,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
-import com.inventrohyder.pluralsight_notekeeper.NoteKeeperDatabaseContract.CourseInfoEntry;
 import com.inventrohyder.pluralsight_notekeeper.NoteKeeperDatabaseContract.NoteInfoEntry;
+import com.inventrohyder.pluralsight_notekeeper.NoteKeeperProviderContract.Notes;
 
 import java.util.List;
 
@@ -208,34 +207,24 @@ public class MainActivity extends AppCompatActivity
     @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
+        CursorLoader loader = null;
         // The loader id is LOADER_NOTES
-        return new CursorLoader(MainActivity.this) {
-            @Override
-            public Cursor loadInBackground() {
-                SQLiteDatabase db = mDbOpenHelper.getReadableDatabase();
+        if (id == LOADER_NOTES) {
+            // Query the notes
+            String[] noteColumns = {
+                    NoteInfoEntry.getQName(NoteInfoEntry._ID),
+                    Notes.COLUMN_NOTE_TITLE,
+                    Notes.COLUMN_COURSE_TITLE
+            };
 
-                // Query the notes
-                String[] noteColumns = {
-                        NoteInfoEntry.getQName(NoteInfoEntry._ID),
-                        NoteInfoEntry.COLUMN_NOTE_TITLE,
-                        CourseInfoEntry.COLUMN_COURSE_TITLE
-                };
+            // Load the notes ordered by both the courseId and NoteTitle
+            final String noteOrderBy = Notes.COLUMN_COURSE_TITLE + ", " +
+                    Notes.COLUMN_NOTE_TITLE;
 
-                // Load the notes ordered by both the courseId and NoteTitle
-                final String noteOrderBy = CourseInfoEntry.COLUMN_COURSE_TITLE + ", " +
-                        NoteInfoEntry.COLUMN_NOTE_TITLE;
-
-                // note_info JOIN course_info on note_info.course_id = course_info.course_id
-                String tablesWithJoin = NoteInfoEntry.TABLE_NAME + " JOIN " +
-                        CourseInfoEntry.TABLE_NAME + " ON " +
-                        NoteInfoEntry.getQName(NoteInfoEntry.COLUMN_COURSE_ID) + " = " +
-                        CourseInfoEntry.getQName(CourseInfoEntry.COLUMN_COURSE_ID);
-                return db.query(tablesWithJoin, noteColumns,
-                        null, null, null, null,
-                        noteOrderBy);
-
-            }
-        };
+            loader = new CursorLoader(this, Notes.CONTENT_EXPANDED_URI, noteColumns,
+                    null, null, noteOrderBy);
+        }
+        return loader;
     }
 
     @Override
