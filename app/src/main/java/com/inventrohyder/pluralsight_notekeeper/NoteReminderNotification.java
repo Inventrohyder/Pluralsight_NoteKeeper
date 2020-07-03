@@ -3,10 +3,13 @@ package com.inventrohyder.pluralsight_notekeeper;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
@@ -20,27 +23,34 @@ class NoteReminderNotification {
     private static final String NOTIFICATION_TAG = "NoteReminder";
 
     public static void notify(final Context context,
-                              final String exampleString, final int number) {
+                              final String noteText) {
         createNotificationChannel(context);
 
         final Resources res = context.getResources();
 
-        final Bitmap picture = BitmapFactory.decodeResource(res, R.drawable.example_picture);
+        final Bitmap picture = BitmapFactory.decodeResource(res, R.drawable.logo);
 
-        final String title = "This is " + exampleString;
-        final String text = "You were talking about " + exampleString + " when the other things like .... happened";
-
-        final NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID);
-        builder.setDefaults(Notification.DEFAULT_ALL)
+        final NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
+                .setDefaults(Notification.DEFAULT_ALL)
                 .setSmallIcon(R.drawable.ic_baseline_assignment_24)
-                .setContentTitle(title)
-                .setContentText(text)
+                .setContentTitle("Review note")
+                .setContentText(noteText)
                 .setLargeIcon(picture)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                .setTicker("Review note")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setContentIntent(
+                        PendingIntent.getActivity(
+                                context,
+                                0,
+                                new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com")),
+                                PendingIntent.FLAG_UPDATE_CURRENT
+                        )
+                )
+                .setAutoCancel(true);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
 
-        notificationManager.notify(number, builder.build());
+        notificationManager.notify(0, builder.build());
     }
 
     private static void createNotificationChannel(Context context) {

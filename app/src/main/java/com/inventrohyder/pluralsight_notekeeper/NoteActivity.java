@@ -194,7 +194,8 @@ public class NoteActivity extends AppCompatActivity
     }
 
     private void showReminderNotification() {
-        NoteReminderNotification.notify(this, "Hello World", 0);
+        String noteText = mTextNoteText.getText().toString();
+        NoteReminderNotification.notify(this, noteText);
     }
 
     private void moveNext() {
