@@ -19,7 +19,6 @@ import static androidx.core.content.ContextCompat.getSystemService;
 class NoteReminderNotification {
 
     public static final String CHANNEL_ID = "NoteKeeper";
-    private static final String NOTIFICATION_TAG = "NoteReminder";
 
     public static void notify(final Context context,
                               final String noteTitle, final String noteText, int noteId) {
