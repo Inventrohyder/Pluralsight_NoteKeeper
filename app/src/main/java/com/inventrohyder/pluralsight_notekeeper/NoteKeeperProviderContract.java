@@ -29,9 +29,13 @@ final class NoteKeeperProviderContract {
         public static final Uri CONTENT_URI = Uri.withAppendedPath(AUTHORITY_URI, PATH);
     }
 
-    public static final class Notes implements NotesColumns, BaseColumns, CoursesIdColumns {
+    public static final class Notes implements NotesColumns, BaseColumns, CoursesIdColumns, CourseColumns {
         public static final String PATH = "notes";
         // content://com.inventrohyder.pluralsight_notekeeper.provider/notes
         public static final Uri CONTENT_URI = Uri.withAppendedPath(AUTHORITY_URI, PATH);
+
+        public static final String PATH_EXPANDED = "notes_expanded";
+        // content://com.inventrohyder.pluralsight_notekeeper.provider/notes_expanded
+        public static final Uri CONTENT_EXPANDED_URI = Uri.withAppendedPath(AUTHORITY_URI, PATH_EXPANDED);
     }
 }
