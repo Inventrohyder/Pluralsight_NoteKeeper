@@ -53,6 +53,16 @@ class NoteReminderNotification {
                                 PendingIntent.FLAG_UPDATE_CURRENT
                         )
                 )
+                .addAction(
+                        0,
+                        "View all notes",
+                        PendingIntent.getActivity(
+                                context,
+                                0,
+                                new Intent(context, MainActivity.class),
+                                PendingIntent.FLAG_UPDATE_CURRENT
+                        )
+                )
                 .setAutoCancel(true);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
