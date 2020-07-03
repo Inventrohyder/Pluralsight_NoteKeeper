@@ -23,6 +23,7 @@ import androidx.loader.content.Loader;
 
 import com.inventrohyder.pluralsight_notekeeper.NoteKeeperDatabaseContract.CourseInfoEntry;
 import com.inventrohyder.pluralsight_notekeeper.NoteKeeperDatabaseContract.NoteInfoEntry;
+import com.inventrohyder.pluralsight_notekeeper.NoteKeeperProviderContract.Courses;
 
 public class NoteActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -305,15 +306,15 @@ public class NoteActivity extends AppCompatActivity
 
     private CursorLoader createLoaderCourses() {
         mCourseQueryFinished = false;
-        Uri uri = Uri.parse("content://com.inventrohyder.pluralsight_notekeeper.provider");
+        Uri uri = Courses.CONTENT_URI;
         String[] courseColumns = {
-                CourseInfoEntry.COLUMN_COURSE_TITLE,
-                CourseInfoEntry.COLUMN_COURSE_ID,
-                CourseInfoEntry._ID
+                Courses.COLUMN_COURSE_TITLE,
+                Courses.COLUMN_COURSE_ID,
+                Courses._ID
         };
 
         return new CursorLoader(this, uri, courseColumns,
-                null, null, CourseInfoEntry.COLUMN_COURSE_TITLE);
+                null, null, Courses.COLUMN_COURSE_TITLE);
 
     }
 
