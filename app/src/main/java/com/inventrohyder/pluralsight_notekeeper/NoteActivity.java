@@ -53,6 +53,7 @@ public class NoteActivity extends AppCompatActivity
     private SimpleCursorAdapter mAdapterCourses;
     private boolean mCourseQueryFinished;
     private boolean mNotesQueryFinished;
+    private Uri mNoteUri;
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
@@ -163,7 +164,7 @@ public class NoteActivity extends AppCompatActivity
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                Uri uri = getContentResolver().insert(Notes.CONTENT_URI, values);
+                mNoteUri = getContentResolver().insert(Notes.CONTENT_URI, values);
             }
         };
         new Thread(runnable).start();
