@@ -186,9 +186,15 @@ public class NoteActivity extends AppCompatActivity
             finish();
         } else if (id == R.id.action_next) {
             moveNext();
+        } else if (id == R.id.action_set_reminder) {
+            showReminderNotification();
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showReminderNotification() {
+        NoteReminderNotification.notify(this, "Hello World", 0);
     }
 
     private void moveNext() {
