@@ -149,7 +149,7 @@ public class NoteActivity extends AppCompatActivity
     }
 
     private void createNewNote() {
-        AsyncTask<ContentValues, Void, Uri> task = new AsyncTask<ContentValues, Void, Uri>() {
+        AsyncTask<ContentValues, Integer, Uri> task = new AsyncTask<ContentValues, Integer, Uri>() {
             private ProgressBar mProgressBar;
 
             @Override
@@ -165,10 +165,18 @@ public class NoteActivity extends AppCompatActivity
                 ContentValues insertValues = contentValues[0];
                 Uri rowUri = getContentResolver().insert(Notes.CONTENT_URI, insertValues);
                 simulateLongRunningWork();  // simulate slow database work
+                publishProgress(2);
 
                 simulateLongRunningWork();  // simulate slow work with data
+                publishProgress(3);
 
                 return rowUri;
+            }
+
+            @Override
+            protected void onProgressUpdate(Integer... values) {
+                int progressValue = values[0];
+                mProgressBar.setProgress(progressValue);
             }
 
             @Override
@@ -176,6 +184,7 @@ public class NoteActivity extends AppCompatActivity
                 Log.d(TAG, "Call to onPostExecute - thread: " + Thread.currentThread().getId());
                 mNoteUri = uri;
                 displaySnackBar(mNoteUri.toString());
+                mProgressBar.setVisibility(View.GONE);
             }
         };
 
