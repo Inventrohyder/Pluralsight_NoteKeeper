@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -145,18 +146,26 @@ public class NoteActivity extends AppCompatActivity
     }
 
     private void createNewNote() {
+        AsyncTask<ContentValues, Void, Uri> task = new AsyncTask<ContentValues, Void, Uri>() {
+            @Override
+            protected Uri doInBackground(ContentValues... contentValues) {
+                ContentValues insertValues = contentValues[0];
+                Uri rowUri = getContentResolver().insert(Notes.CONTENT_URI, insertValues);
+                return rowUri;
+            }
+
+            @Override
+            protected void onPostExecute(Uri uri) {
+                mNoteUri = uri;
+            }
+        };
+
         final ContentValues values = new ContentValues();
         values.put(Notes.COLUMN_COURSE_ID, "");
         values.put(Notes.COLUMN_NOTE_TITLE, "");
         values.put(Notes.COLUMN_NOTE_TEXT, "");
 
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                mNoteUri = getContentResolver().insert(Notes.CONTENT_URI, values);
-            }
-        };
-        new Thread(runnable).start();
+        task.execute(values);
     }
 
     @Override
