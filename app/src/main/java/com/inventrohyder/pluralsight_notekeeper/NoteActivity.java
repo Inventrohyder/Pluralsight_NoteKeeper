@@ -10,7 +10,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 
@@ -148,11 +150,24 @@ public class NoteActivity extends AppCompatActivity
 
     private void createNewNote() {
         AsyncTask<ContentValues, Void, Uri> task = new AsyncTask<ContentValues, Void, Uri>() {
+            private ProgressBar mProgressBar;
+
+            @Override
+            protected void onPreExecute() {
+                mProgressBar = findViewById(R.id.progress_bar);
+                mProgressBar.setVisibility(View.VISIBLE);
+                mProgressBar.setProgress(1);
+            }
+
             @Override
             protected Uri doInBackground(ContentValues... contentValues) {
                 Log.d(TAG, "Call to doInBackground - thread: " + Thread.currentThread().getId());
                 ContentValues insertValues = contentValues[0];
                 Uri rowUri = getContentResolver().insert(Notes.CONTENT_URI, insertValues);
+                simulateLongRunningWork();  // simulate slow database work
+
+                simulateLongRunningWork();  // simulate slow work with data
+
                 return rowUri;
             }
 
@@ -171,6 +186,15 @@ public class NoteActivity extends AppCompatActivity
 
         Log.d(TAG, "Call to execute - thread: " + Thread.currentThread().getId());
         task.execute(values);
+    }
+
+    private void simulateLongRunningWork() {
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            Log.e(TAG, "Error when sleeping the thread.");
+        }
     }
 
     private void displaySnackBar(String text) {
