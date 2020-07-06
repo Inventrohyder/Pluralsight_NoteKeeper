@@ -22,6 +22,7 @@ import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.inventrohyder.pluralsight_notekeeper.NoteKeeperDatabaseContract.CourseInfoEntry;
 import com.inventrohyder.pluralsight_notekeeper.NoteKeeperDatabaseContract.NoteInfoEntry;
 import com.inventrohyder.pluralsight_notekeeper.NoteKeeperProviderContract.Courses;
@@ -149,6 +150,7 @@ public class NoteActivity extends AppCompatActivity
         AsyncTask<ContentValues, Void, Uri> task = new AsyncTask<ContentValues, Void, Uri>() {
             @Override
             protected Uri doInBackground(ContentValues... contentValues) {
+                Log.d(TAG, "Call to doInBackground - thread: " + Thread.currentThread().getId());
                 ContentValues insertValues = contentValues[0];
                 Uri rowUri = getContentResolver().insert(Notes.CONTENT_URI, insertValues);
                 return rowUri;
@@ -156,7 +158,9 @@ public class NoteActivity extends AppCompatActivity
 
             @Override
             protected void onPostExecute(Uri uri) {
+                Log.d(TAG, "Call to onPostExecute - thread: " + Thread.currentThread().getId());
                 mNoteUri = uri;
+                displaySnackBar(mNoteUri.toString());
             }
         };
 
@@ -165,7 +169,13 @@ public class NoteActivity extends AppCompatActivity
         values.put(Notes.COLUMN_NOTE_TITLE, "");
         values.put(Notes.COLUMN_NOTE_TEXT, "");
 
+        Log.d(TAG, "Call to execute - thread: " + Thread.currentThread().getId());
         task.execute(values);
+    }
+
+    private void displaySnackBar(String text) {
+        Snackbar.make(findViewById(R.id.coordinator), text, Snackbar.LENGTH_LONG)
+                .show();
     }
 
     @Override
