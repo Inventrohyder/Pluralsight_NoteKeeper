@@ -31,6 +31,9 @@ class NoteReminderNotification {
         Intent noteActivityIntent = new Intent(context, NoteActivity.class);
         noteActivityIntent.putExtra(NoteActivity.NOTE_ID, noteId);
 
+        Intent backupServiceIntent = new Intent(context, NoteBackupService.class);
+        backupServiceIntent.putExtra(NoteBackupService.EXTRA_COURSE_ID, NoteBackup.ALL_COURSES);
+
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setSmallIcon(R.drawable.ic_baseline_assignment_24)
@@ -59,6 +62,16 @@ class NoteReminderNotification {
                                 context,
                                 0,
                                 new Intent(context, MainActivity.class),
+                                PendingIntent.FLAG_UPDATE_CURRENT
+                        )
+                )
+                .addAction(
+                        0,
+                        "Backup notes",
+                        PendingIntent.getService(
+                                context,
+                                0,
+                                backupServiceIntent,
                                 PendingIntent.FLAG_UPDATE_CURRENT
                         )
                 )
