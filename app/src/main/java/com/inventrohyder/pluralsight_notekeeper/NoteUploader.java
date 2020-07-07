@@ -40,22 +40,23 @@ class NoteUploader {
                 Notes.COLUMN_NOTE_TEXT
         };
 
-        Cursor cursor = mContext.getContentResolver().query(dataUri, columns, null, null, null);
-        assert cursor != null;
-        int courseIdPos = cursor.getColumnIndex(Notes.COLUMN_COURSE_ID);
-        int noteTitlePos = cursor.getColumnIndex(Notes.COLUMN_NOTE_TITLE);
-        int noteTextPos = cursor.getColumnIndex(Notes.COLUMN_NOTE_TEXT);
+        try (Cursor cursor = mContext.getContentResolver().query(dataUri, columns, null, null, null)) {
+            assert cursor != null;
+            int courseIdPos = cursor.getColumnIndex(Notes.COLUMN_COURSE_ID);
+            int noteTitlePos = cursor.getColumnIndex(Notes.COLUMN_NOTE_TITLE);
+            int noteTextPos = cursor.getColumnIndex(Notes.COLUMN_NOTE_TEXT);
 
-        Log.i(TAG, ">>>*** UPLOAD START - " + dataUri + " ***<<<");
-        mCanceled = false;
-        while (isNotCanceled() && cursor.moveToNext()) {
-            String courseId = cursor.getString(courseIdPos);
-            String noteTitle = cursor.getString(noteTitlePos);
-            String noteText = cursor.getString(noteTextPos);
+            Log.i(TAG, ">>>*** UPLOAD START - " + dataUri + " ***<<<");
+            mCanceled = false;
+            while (isNotCanceled() && cursor.moveToNext()) {
+                String courseId = cursor.getString(courseIdPos);
+                String noteTitle = cursor.getString(noteTitlePos);
+                String noteText = cursor.getString(noteTextPos);
 
-            if (!noteTitle.equals("")) {
-                Log.i(TAG, ">>>Uploading Note<<< " + courseId + "|" + noteTitle + "|" + noteText);
-                simulateLongRunningWork();
+                if (!noteTitle.equals("")) {
+                    Log.i(TAG, ">>>Uploading Note<<< " + courseId + "|" + noteTitle + "|" + noteText);
+                    simulateLongRunningWork();
+                }
             }
         }
         Log.i(TAG, ">>>*** UPLOAD DONE - " + dataUri + " ***<<<");
