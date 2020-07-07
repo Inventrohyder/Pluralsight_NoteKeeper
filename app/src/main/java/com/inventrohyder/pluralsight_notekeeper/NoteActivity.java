@@ -5,8 +5,8 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -149,44 +149,8 @@ public class NoteActivity extends AppCompatActivity
     }
 
     private void createNewNote() {
-        AsyncTask<ContentValues, Integer, Uri> task = new AsyncTask<ContentValues, Integer, Uri>() {
-            private ProgressBar mProgressBar;
-
-            @Override
-            protected void onPreExecute() {
-                mProgressBar = findViewById(R.id.progress_bar);
-                mProgressBar.setVisibility(View.VISIBLE);
-                mProgressBar.setProgress(1);
-            }
-
-            @Override
-            protected Uri doInBackground(ContentValues... contentValues) {
-                Log.d(TAG, "Call to doInBackground - thread: " + Thread.currentThread().getId());
-                ContentValues insertValues = contentValues[0];
-                Uri rowUri = getContentResolver().insert(Notes.CONTENT_URI, insertValues);
-                simulateLongRunningWork();  // simulate slow database work
-                publishProgress(2);
-
-                simulateLongRunningWork();  // simulate slow work with data
-                publishProgress(3);
-
-                return rowUri;
-            }
-
-            @Override
-            protected void onProgressUpdate(Integer... values) {
-                int progressValue = values[0];
-                mProgressBar.setProgress(progressValue);
-            }
-
-            @Override
-            protected void onPostExecute(Uri uri) {
-                Log.d(TAG, "Call to onPostExecute - thread: " + Thread.currentThread().getId());
-                mNoteUri = uri;
-                displaySnackBar(mNoteUri.toString());
-                mProgressBar.setVisibility(View.GONE);
-            }
-        };
+        final Handler handler = new Handler();
+        final ProgressBar progressBar = findViewById(R.id.progress_bar);
 
         final ContentValues values = new ContentValues();
         values.put(Notes.COLUMN_COURSE_ID, "");
@@ -194,7 +158,54 @@ public class NoteActivity extends AppCompatActivity
         values.put(Notes.COLUMN_NOTE_TEXT, "");
 
         Log.d(TAG, "Call to execute - thread: " + Thread.currentThread().getId());
-        task.execute(values);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Log.d(TAG, "Call in the background - thread: " + Thread.currentThread().getId());
+                Uri rowUri = getContentResolver().insert(Notes.CONTENT_URI, values);
+
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.VISIBLE);
+                        progressBar.setProgress(1);
+                    }
+                });
+
+                simulateLongRunningWork();  // simulate slow database work
+
+                //Update the value background thread to UI thread
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setProgress(2);
+                    }
+                });
+
+                simulateLongRunningWork();  // simulate slow work with data
+
+                //Update the value background thread to UI thread
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setProgress(3);
+                    }
+                });
+
+                Log.d(TAG, "Call after background work in - thread: " + Thread.currentThread().getId());
+                mNoteUri = rowUri;
+                assert mNoteUri != null;
+                displaySnackBar(mNoteUri.toString());
+
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                    }
+                });
+            }
+        }).start();
+
     }
 
     private void simulateLongRunningWork() {
