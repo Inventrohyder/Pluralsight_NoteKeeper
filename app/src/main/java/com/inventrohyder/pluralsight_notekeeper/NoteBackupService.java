@@ -20,6 +20,7 @@ public class NoteBackupService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
             String backupCourseId = intent.getStringExtra(EXTRA_COURSE_ID);
+            assert backupCourseId != null;
             NoteBackup.doBackup(this, backupCourseId);
         }
     }

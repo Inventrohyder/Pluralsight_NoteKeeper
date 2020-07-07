@@ -26,6 +26,7 @@ class NoteBackup {
         }
 
         Cursor cursor = context.getContentResolver().query(Notes.CONTENT_URI, columns, selection, selectionArgs, null);
+        assert cursor != null;
         int courseIdPos = cursor.getColumnIndex(Notes.COLUMN_COURSE_ID);
         int noteTitlePos = cursor.getColumnIndex(Notes.COLUMN_NOTE_TITLE);
         int noteTextPos = cursor.getColumnIndex(Notes.COLUMN_NOTE_TEXT);
