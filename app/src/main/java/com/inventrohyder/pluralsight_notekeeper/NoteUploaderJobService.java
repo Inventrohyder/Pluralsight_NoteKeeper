@@ -22,27 +22,11 @@ public class NoteUploaderJobService extends JobService {
                 Uri dataUri = Uri.parse(stringDataUri);
                 mNoteUploader.doUpload(dataUri);
 
-                if (!mNoteUploader.isCanceled())
+                if (mNoteUploader.isNotCanceled())
                     jobFinished(jobParameters, false);
 
             }
         };
-
-//        AsyncTask<JobParameters, Void, Void> task = new AsyncTask<JobParameters, Void, Void>() {
-//            @Override
-//            protected Void doInBackground(JobParameters... backgroundParams) {
-//                JobParameters jobParams = backgroundParams[0];
-//
-//                String stringDataUri = jobParams.getExtras().getString(EXTRA_DATA_URI);
-//                Uri dataUri = Uri.parse(stringDataUri);
-//                mNoteUploader.doUpload(dataUri);
-//
-//                if (!mNoteUploader.isCanceled())
-//                    jobFinished(jobParams, false);
-//
-//                return null;
-//            }
-//        };
 
         mNoteUploader = new NoteUploader(this);
 

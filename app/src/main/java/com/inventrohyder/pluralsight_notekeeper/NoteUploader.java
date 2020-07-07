@@ -25,8 +25,8 @@ class NoteUploader {
         }
     }
 
-    public boolean isCanceled() {
-        return mCanceled;
+    public boolean isNotCanceled() {
+        return !mCanceled;
     }
 
     public void cancel() {
@@ -47,7 +47,7 @@ class NoteUploader {
 
         Log.i(TAG, ">>>*** UPLOAD START - " + dataUri + " ***<<<");
         mCanceled = false;
-        while (!isCanceled() && cursor.moveToNext()) {
+        while (isNotCanceled() && cursor.moveToNext()) {
             String courseId = cursor.getString(courseIdPos);
             String noteTitle = cursor.getString(noteTitlePos);
             String noteText = cursor.getString(noteTextPos);
