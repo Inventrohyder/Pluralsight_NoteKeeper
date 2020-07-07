@@ -1,5 +1,8 @@
 package com.inventrohyder.pluralsight_notekeeper;
 
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -38,6 +41,7 @@ public class MainActivity extends AppCompatActivity
 
     public static final int LOADER_NOTES = 0;
     public static final int LOADER_COURSES = 2;
+    public static final int NOTE_UPLOADER_JOB_ID = 1;
     private NoteRecyclerAdapter mNoteRecyclerAdapter;
     private RecyclerView mRecyclerItems;
     private LinearLayoutManager mNotesLayoutManager;
@@ -120,9 +124,20 @@ public class MainActivity extends AppCompatActivity
             return true;
         } else if (id == R.id.action_backup) {
             backupNotes();
+        } else if (id == R.id.action_upload_notes) {
+            scheduleNoteUpload();
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void scheduleNoteUpload() {
+        ComponentName componentName = new ComponentName(this, NoteUploaderJobService.class);
+        JobInfo jobInfo = new JobInfo.Builder(NOTE_UPLOADER_JOB_ID, componentName)
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                .build();
+        JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+        jobScheduler.schedule(jobInfo);
     }
 
     private void backupNotes() {
