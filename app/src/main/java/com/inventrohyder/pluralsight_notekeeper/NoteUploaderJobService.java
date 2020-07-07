@@ -25,7 +25,8 @@ public class NoteUploaderJobService extends JobService {
                 Uri dataUri = Uri.parse(stringDataUri);
                 mNoteUploader.doUpload(dataUri);
 
-                jobFinished(jobParams, false);
+                if (!mNoteUploader.isCanceled())
+                    jobFinished(jobParams, false);
 
                 return null;
             }
@@ -39,6 +40,7 @@ public class NoteUploaderJobService extends JobService {
 
     @Override
     public boolean onStopJob(JobParameters jobParameters) {
-        return false;
+        mNoteUploader.cancel();
+        return true;
     }
 }
