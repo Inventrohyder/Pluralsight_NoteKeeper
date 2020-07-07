@@ -57,6 +57,7 @@ class NoteUploader {
                 simulateLongRunningWork();
             }
         }
+        Log.i(TAG, ">>>*** UPLOAD DONE - " + dataUri + " ***<<<");
     }
 
 }

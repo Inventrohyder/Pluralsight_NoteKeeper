@@ -3,7 +3,6 @@ package com.inventrohyder.pluralsight_notekeeper;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.net.Uri;
-import android.os.AsyncTask;
 
 public class NoteUploaderJobService extends JobService {
 
@@ -14,26 +13,40 @@ public class NoteUploaderJobService extends JobService {
     }
 
     @Override
-    public boolean onStartJob(JobParameters jobParameters) {
+    public boolean onStartJob(final JobParameters jobParameters) {
 
-        AsyncTask<JobParameters, Void, Void> task = new AsyncTask<JobParameters, Void, Void>() {
+        Runnable runnable = new Runnable() {
             @Override
-            protected Void doInBackground(JobParameters... backgroundParams) {
-                JobParameters jobParams = backgroundParams[0];
-
-                String stringDataUri = jobParams.getExtras().getString(EXTRA_DATA_URI);
+            public void run() {
+                String stringDataUri = jobParameters.getExtras().getString(EXTRA_DATA_URI);
                 Uri dataUri = Uri.parse(stringDataUri);
                 mNoteUploader.doUpload(dataUri);
 
                 if (!mNoteUploader.isCanceled())
-                    jobFinished(jobParams, false);
+                    jobFinished(jobParameters, false);
 
-                return null;
             }
         };
 
+//        AsyncTask<JobParameters, Void, Void> task = new AsyncTask<JobParameters, Void, Void>() {
+//            @Override
+//            protected Void doInBackground(JobParameters... backgroundParams) {
+//                JobParameters jobParams = backgroundParams[0];
+//
+//                String stringDataUri = jobParams.getExtras().getString(EXTRA_DATA_URI);
+//                Uri dataUri = Uri.parse(stringDataUri);
+//                mNoteUploader.doUpload(dataUri);
+//
+//                if (!mNoteUploader.isCanceled())
+//                    jobFinished(jobParams, false);
+//
+//                return null;
+//            }
+//        };
+
         mNoteUploader = new NoteUploader(this);
-        task.execute(jobParameters);
+
+        new Thread(runnable).start();
 
         return true;
     }
