@@ -39,7 +39,7 @@
         <receiver
             android:name=".NoteReminderReceiver"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="false" />
 
         <service
             android:name=".NoteUploaderJobService"

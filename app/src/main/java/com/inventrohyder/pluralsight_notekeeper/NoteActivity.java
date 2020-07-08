@@ -276,7 +276,6 @@ public class NoteActivity extends AppCompatActivity
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
         long currentTimeInMilliseconds = SystemClock.elapsedRealtime();
-        long ONE_HOUR = 60 * 60 * 1000;
         long TEN_SECONDS = 10 * 1000;
 
         long alarmTime = currentTimeInMilliseconds + TEN_SECONDS;
