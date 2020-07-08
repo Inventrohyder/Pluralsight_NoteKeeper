@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -274,6 +275,13 @@ public class NoteActivity extends AppCompatActivity
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
+        long currentTimeInMilliseconds = SystemClock.elapsedRealtime();
+        long ONE_HOUR = 60 * 60 * 1000;
+        long TEN_SECONDS = 10 * 1000;
+
+        long alarmTime = currentTimeInMilliseconds + TEN_SECONDS;
+
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME, alarmTime, pendingIntent);
     }
 
     private void moveNext() {
