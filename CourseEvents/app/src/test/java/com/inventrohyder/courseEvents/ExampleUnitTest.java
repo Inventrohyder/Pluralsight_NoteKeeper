@@ -1,4 +1,4 @@
-package com.inventrohyder.pluralsightcourseevents;
+package com.inventrohyder.courseEvents;
 
 import org.junit.Test;
 

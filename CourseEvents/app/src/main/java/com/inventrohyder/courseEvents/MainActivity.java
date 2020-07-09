@@ -1,4 +1,4 @@
-package com.inventrohyder.pluralsightcourseevents;
+package com.inventrohyder.courseEvents;
 
 import android.content.IntentFilter;
 import android.os.Bundle;

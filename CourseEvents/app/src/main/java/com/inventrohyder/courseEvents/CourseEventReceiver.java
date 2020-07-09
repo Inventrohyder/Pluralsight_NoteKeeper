@@ -1,4 +1,4 @@
-package com.inventrohyder.pluralsightcourseevents;
+package com.inventrohyder.courseEvents;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
