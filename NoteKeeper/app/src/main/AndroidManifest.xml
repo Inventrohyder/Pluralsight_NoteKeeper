@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.inventrohyder.pluralsight_notekeeper">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.inventrohyder.noteKeeper">
 
     <application
         android:allowBackup="false"
@@ -11,12 +12,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".SettingsActivity"
+            android:name="com.inventrohyder.noteKeeper.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName="com.inventrohyder.noteKeeper.MainActivity" />
 
         <activity
-            android:name=".MainActivity"
+            android:name="com.inventrohyder.noteKeeper.MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -26,28 +27,31 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".NoteActivity"
+            android:name="com.inventrohyder.noteKeeper.NoteActivity"
             android:label="@string/title_activity_note"
             android:theme="@style/AppTheme.NoActionBar" />
 
+        <!--  Allow Other App to access the data          -->
         <provider
-            android:name=".NoteKeeperProvider"
-            android:authorities="com.inventrohyder.pluralsight_notekeeper.provider"
+            android:name="com.inventrohyder.noteKeeper.NoteKeeperProvider"
+            android:authorities="com.inventrohyder.noteKeeper.provider"
             android:enabled="true"
-            android:exported="false" />
+            android:exported="true"
+            tools:ignore="ExportedContentProvider"
+        />
 
         <receiver
-            android:name=".NoteReminderReceiver"
+            android:name="com.inventrohyder.noteKeeper.NoteReminderReceiver"
             android:enabled="true"
             android:exported="false" />
 
         <service
-            android:name=".NoteUploaderJobService"
+            android:name="com.inventrohyder.noteKeeper.NoteUploaderJobService"
             android:enabled="true"
             android:exported="false"
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
-            android:name=".NoteBackupService"
+            android:name="com.inventrohyder.noteKeeper.NoteBackupService"
             android:exported="false" />
     </application>
 
